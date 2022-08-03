@@ -21,15 +21,22 @@ open class WrapStackView: UIView {
         case bottom
     }
     
+    public enum ItemSize {
+        case fixed(_ size: CGSize)
+        case adaptive(column: Int)
+    }
+    
     public var verticalAlignment: VerticalAlignment = .nature
     public var horizontalAlignment: HorizontalAlignment = .center
     public var contentInsets: UIEdgeInsets = .zero
     public var itemSpacing: CGFloat = 0
     public var lineSpacing: CGFloat = 0
+    public var itemSize: ItemSize = .adaptive(column: 4)
     
     public required init(
         verticalAlignment: VerticalAlignment = .nature,
         horizontalAlignment: HorizontalAlignment = .center,
+        itemSize: ItemSize = .adaptive(column: 4),
         contentInsets: UIEdgeInsets = .zero,
         itemSpacing: CGFloat = 0,
         lineSpacing: CGFloat = 0,
@@ -39,6 +46,7 @@ open class WrapStackView: UIView {
         
         self.verticalAlignment = verticalAlignment
         self.horizontalAlignment = horizontalAlignment
+        self.itemSize = itemSize
         self.contentInsets = contentInsets
         self.itemSpacing = itemSpacing
         self.lineSpacing = lineSpacing
@@ -67,9 +75,11 @@ open class WrapStackView: UIView {
                     continue
                 }
                 
+                let subviewSize = itemSize(subview)
+                
                 let previousView = effectiveSubviews[index - 1]
                 let x = previousView.frame.maxX + itemSpacing
-                let maxX = x + subview.frame.width
+                let maxX = x + subviewSize.width
                 if maxX > frame.width { // TODO: contentInsets
                     // new section
                     subview.frame.origin.x = 0
@@ -99,5 +109,23 @@ open class WrapStackView: UIView {
         return effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
+    }
+}
+
+extension WrapStackView {
+    
+    private func itemSize(_ item: UIView) -> CGSize {
+        switch itemSize {
+        case .adaptive(let column):
+            let itemLength = itemSpacing * CGFloat(column - 1)
+            let calculateWidth = (frame.width - itemLength) / CGFloat(column)
+            let calculateSize = CGSize(width: calculateWidth, height: item.frame.height)
+            item.frame.size = calculateSize
+            return calculateSize
+            
+        case .fixed(let size):
+            item.frame.size = size
+            return size
+        }
     }
 }
