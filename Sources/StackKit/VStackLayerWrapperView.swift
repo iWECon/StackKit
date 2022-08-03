@@ -10,14 +10,11 @@ public struct VStackLayerWrapperViewContent {
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 open class VStackLayerWrapperView: UIView {
     
-    public typealias Alignment = VStackLayer.Alignment
-    public typealias Distribution = VStackLayer.Distribution
-    
     public var vStackLayer: VStackLayer {
         self.layer as! VStackLayer
     }
     
-    open var alignment: Alignment {
+    open var alignment: VStackAlignment {
         get {
             vStackLayer.alignment
         }
@@ -26,7 +23,7 @@ open class VStackLayerWrapperView: UIView {
         }
     }
     
-    open var distribution: Distribution {
+    open var distribution: VStackDistribution {
         get {
             vStackLayer.distribution
         }
@@ -36,8 +33,8 @@ open class VStackLayerWrapperView: UIView {
     }
     
     public required init(
-        alignment: Alignment,
-        distribution: Distribution = .fillWidth,
+        alignment: VStackAlignment,
+        distribution: VStackDistribution = .fillWidth,
         @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)

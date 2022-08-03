@@ -10,35 +10,36 @@ public struct HStackLayerWrapperViewContent {
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 open class HStackLayerWrapperView: UIView {
     
-    public typealias Alignment = HStackLayer.Alignment
-    public typealias Distribution = HStackLayer.Distribution
+    public var hStackLayer: HStackLayer {
+        self.layer as! HStackLayer
+    }
     
-    open var alignment: Alignment {
+    open var alignment: HStackAlignment {
         get {
-            (layer as! HStackLayer).alignment
+            hStackLayer.alignment
         }
         set {
-            (layer as! HStackLayer).alignment = newValue
+            hStackLayer.alignment = newValue
         }
     }
     
-    open var distribution: Distribution {
+    open var distribution: HStackDistribution {
         get {
-            (layer as! HStackLayer).distribution
+            hStackLayer.distribution
         }
         set {
-            (layer as! HStackLayer).distribution = newValue
+            hStackLayer.distribution = newValue
         }
     }
     
     public required init(
-        alignment: Alignment,
-        distribution: Distribution = .autoSpacing,
+        alignment: HStackAlignment,
+        distribution: HStackDistribution = .autoSpacing,
         @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
-        (layer as! HStackLayer).alignment = alignment
-        (layer as! HStackLayer).distribution = distribution
+        hStackLayer.alignment = alignment
+        hStackLayer.distribution = distribution
         
         for v in content() {
             appendView(v)
@@ -82,6 +83,6 @@ open class HStackLayerWrapperView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        (layer as! HStackLayer).sizeThatFits(size)
+        hStackLayer.sizeThatFits(size)
     }
 }

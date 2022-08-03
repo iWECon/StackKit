@@ -2,30 +2,8 @@ import UIKit
 
 open class HStackLayer: CALayer {
     
-    public enum Alignment {
-        case top
-        case center
-        case bottom
-    }
-    
-    public enum Distribution {
-        /// specify spacing
-        case spacing(_ spacing: CGFloat)
-        
-        /// automatic calculate spacing
-        /// should set width?
-        case autoSpacing
-        
-        /// fill height
-        case fillHeight
-        
-        /// fill width and height (width may equal)
-        /// should set width?
-        case fill
-    }
-    
-    public var alignment: Alignment = .center
-    public var distribution: Distribution = .autoSpacing
+    public var alignment: HStackAlignment = .center
+    public var distribution: HStackDistribution = .autoSpacing
     
     public var contentSize: CGSize {
         effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
@@ -50,8 +28,8 @@ open class HStackLayer: CALayer {
     }
     
     public required init(
-        alignment: Alignment = .center,
-        distribution: Distribution = .autoSpacing,
+        alignment: HStackAlignment = .center,
+        distribution: HStackDistribution = .autoSpacing,
         @_StackKitLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init()
@@ -93,11 +71,11 @@ open class HStackLayer: CALayer {
             makeSpacing(spacing)
             
         case .autoSpacing:
-            let spacing = (frame.width - effectiveSublayers.map({ $0.frame.size.width }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+            let spacing = autoSpacing()
             makeSpacing(spacing)
             
         case .fillHeight: // autoSpacing and fill height
-            let spacing = (frame.width - effectiveSublayers.map({ $0.frame.size.width }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+            let spacing = autoSpacing()
             makeSpacing(spacing)
             fillHeight()
             
@@ -126,6 +104,10 @@ open class HStackLayer: CALayer {
 }
 
 extension HStackLayer {
+    
+    private func autoSpacing() -> CGFloat {
+        (frame.width - effectiveSublayers.map({ $0.frame.size.width }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+    }
     
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, sublayer) in effectiveSublayers.enumerated() {

@@ -2,30 +2,8 @@ import UIKit
 
 open class VStackLayer: CALayer {
     
-    public enum Alignment {
-        case left
-        case center
-        case right
-    }
-    
-    public enum Distribution {
-        /// specify spacing
-        case spacing(_ spacing: CGFloat)
-        
-        /// automatic calculate spacing
-        /// should set height?
-        case autoSpacing
-        
-        /// fill width
-        case fillWidth
-        
-        /// fill width and height (height may equal)
-        /// should set height?
-        case fill
-    }
-    
-    public var alignment: Alignment = .center
-    public var distribution: Distribution = .autoSpacing
+    public var alignment: VStackAlignment = .center
+    public var distribution: VStackDistribution = .autoSpacing
     
     public var contentSize: CGSize {
         effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
@@ -50,8 +28,8 @@ open class VStackLayer: CALayer {
     }
     
     public required init(
-        alignment: Alignment = .center,
-        distribution: Distribution = .autoSpacing,
+        alignment: VStackAlignment = .center,
+        distribution: VStackDistribution = .autoSpacing,
         @_StackKitLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init()

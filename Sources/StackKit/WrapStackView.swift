@@ -9,34 +9,17 @@ import UIKit
 
 open class WrapStackView: UIView {
     
-    public enum VerticalAlignment {
-        case nature
-        case center
-        case reverse
-    }
-    
-    public enum HorizontalAlignment {
-        case top
-        case center
-        case bottom
-    }
-    
-    public enum ItemSize {
-        case fixed(_ size: CGSize)
-        case adaptive(column: Int)
-    }
-    
-    public var verticalAlignment: VerticalAlignment = .nature
-    public var horizontalAlignment: HorizontalAlignment = .center
+    public var verticalAlignment: WrapStackVerticalAlignment = .nature
+    public var horizontalAlignment: WrapStackHorizontalAlignment = .center
     public var contentInsets: UIEdgeInsets = .zero
     public var itemSpacing: CGFloat = 0
     public var lineSpacing: CGFloat = 0
-    public var itemSize: ItemSize = .adaptive(column: 4)
+    public var itemSize: WrapStackItemSize = .adaptive(column: 4)
     
     public required init(
-        verticalAlignment: VerticalAlignment = .nature,
-        horizontalAlignment: HorizontalAlignment = .center,
-        itemSize: ItemSize = .adaptive(column: 4),
+        verticalAlignment: WrapStackVerticalAlignment = .nature,
+        horizontalAlignment: WrapStackHorizontalAlignment = .center,
+        itemSize: WrapStackItemSize = .adaptive(column: 4),
         contentInsets: UIEdgeInsets = .zero,
         itemSpacing: CGFloat = 0,
         lineSpacing: CGFloat = 0,
