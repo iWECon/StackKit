@@ -9,6 +9,12 @@ open class VStackView: UIView {
         subviews.filter { $0.alpha > 0 && !$0.isHidden && $0.frame.size != .zero }
     }
     
+    public var contentSize: CGSize {
+        effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+            result.union(rect)
+        }.size
+    }
+    
     open override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -41,6 +47,19 @@ open class VStackView: UIView {
                 $0.frame.size.width = w
             }
         }
+    }
+    
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+        layoutSubviews()
+        
+        var _size = size
+        if size.width == CGFloat.greatestFiniteMagnitude {
+            _size.width = contentSize.width
+        }
+        if size.height == CGFloat.greatestFiniteMagnitude {
+            _size.height = contentSize.height
+        }
+        return _size
     }
 }
 

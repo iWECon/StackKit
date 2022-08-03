@@ -92,7 +92,7 @@ open class HStackLayer: CALayer {
     public func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutSublayers()
         
-        var _size = contentSize
+        var _size = size
         if size.width == CGFloat.greatestFiniteMagnitude {
             _size.width = contentSize.width
         }
