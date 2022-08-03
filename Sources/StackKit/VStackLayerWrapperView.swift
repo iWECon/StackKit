@@ -1,44 +1,48 @@
 import UIKit
 
 @resultBuilder
-public struct HStackLayerWrapperViewContent {
+public struct VStackLayerWrapperViewContent {
     static func buildBlock(_ components: UIView...) -> [UIView] {
         components
     }
 }
 
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
-open class HStackLayerWrapperView: UIView {
+open class VStackLayerWrapperView: UIView {
     
-    public typealias Alignment = HStackLayer.Alignment
-    public typealias Distribution = HStackLayer.Distribution
+    public typealias Alignment = VStackLayer.Alignment
+    public typealias Distribution = VStackLayer.Distribution
+    
+    public var vStackLayer: VStackLayer {
+        self.layer as! VStackLayer
+    }
     
     open var alignment: Alignment {
         get {
-            (layer as! HStackLayer).alignment
+            vStackLayer.alignment
         }
         set {
-            (layer as! HStackLayer).alignment = newValue
+            vStackLayer.alignment = newValue
         }
     }
     
     open var distribution: Distribution {
         get {
-            (layer as! HStackLayer).distribution
+            vStackLayer.distribution
         }
         set {
-            (layer as! HStackLayer).distribution = newValue
+            vStackLayer.distribution = newValue
         }
     }
     
     public required init(
         alignment: Alignment,
-        distribution: Distribution = .autoSpacing,
+        distribution: Distribution = .fillWidth,
         @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
-        (layer as! HStackLayer).alignment = alignment
-        (layer as! HStackLayer).distribution = distribution
+        vStackLayer.alignment = alignment
+        vStackLayer.distribution = distribution
         
         for v in content() {
             appendView(v)
@@ -50,7 +54,7 @@ open class HStackLayerWrapperView: UIView {
     }
     
     open override class var layerClass: AnyClass {
-        HStackLayer.self
+        VStackLayer.self
     }
     
     @available(*, deprecated, message: "use `appendView(_:)` instead")
@@ -82,6 +86,6 @@ open class HStackLayerWrapperView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        (layer as! HStackLayer).sizeThatFits(size)
+        vStackLayer.sizeThatFits(size)
     }
 }

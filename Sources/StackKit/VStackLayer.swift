@@ -1,11 +1,11 @@
 import UIKit
 
-open class HStackLayer: CALayer {
+open class VStackLayer: CALayer {
     
     public enum Alignment {
-        case top
+        case left
         case center
-        case bottom
+        case right
     }
     
     public enum Distribution {
@@ -13,14 +13,14 @@ open class HStackLayer: CALayer {
         case spacing(_ spacing: CGFloat)
         
         /// automatic calculate spacing
-        /// should set width?
+        /// should set height?
         case autoSpacing
         
-        /// fill height
-        case fillHeight
+        /// fill width
+        case fillWidth
         
-        /// fill width and height (width may equal)
-        /// should set width?
+        /// fill width and height (height may equal)
+        /// should set height?
         case fill
     }
     
@@ -74,18 +74,24 @@ open class HStackLayer: CALayer {
         }
     }
     
-    public override func layoutSublayers() {
+    open override func layoutSublayers() {
         super.layoutSublayers()
         
         refreshSublayers()
         
         switch alignment {
-        case .top:
-            effectiveSublayers.forEach { $0.frame.origin.y = 0 }
+        case .left:
+            effectiveSublayers.forEach {
+                $0.frame.origin.x = 0
+            }
         case .center:
-            effectiveSublayers.forEach { $0.position.y = frame.height / 2 }
-        case .bottom:
-            effectiveSublayers.forEach { $0.frame.origin.y = frame.height - $0.frame.height }
+            effectiveSublayers.forEach {
+                $0.position.x = frame.width / 2
+            }
+        case .right:
+            effectiveSublayers.forEach {
+                $0.frame.origin.x = frame.width - $0.frame.width
+            }
         }
         
         switch distribution {
@@ -93,20 +99,20 @@ open class HStackLayer: CALayer {
             makeSpacing(spacing)
             
         case .autoSpacing:
-            let spacing = (frame.width - effectiveSublayers.map({ $0.frame.size.width }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+            let spacing = (frame.height - effectiveSublayers.map({ $0.frame.size.height }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
             makeSpacing(spacing)
             
-        case .fillHeight: // autoSpacing and fill height
-            let spacing = (frame.width - effectiveSublayers.map({ $0.frame.size.width }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+        case .fillWidth:
+            let spacing = (frame.height - effectiveSublayers.map({ $0.frame.size.height }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
             makeSpacing(spacing)
-            fillHeight()
+            fillWidth()
             
         case .fill:
-            fillHeight()
+            fillWidth()
             
-            let w = frame.width / CGFloat(effectiveSublayers.count)
+            let h = frame.height / CGFloat(effectiveSublayers.count)
             effectiveSublayers.forEach {
-                $0.frame.size.width = w
+                $0.frame.size.height = h
             }
         }
     }
@@ -117,22 +123,22 @@ open class HStackLayer: CALayer {
     }
 }
 
-extension HStackLayer {
+extension VStackLayer {
     
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, sublayer) in effectiveSublayers.enumerated() {
             if index == 0 {
-                sublayer.frame.origin.x = 0
+                sublayer.frame.origin.y = 0
             } else {
                 let previousLayer = effectiveSublayers[index - 1]
-                sublayer.frame.origin.x = previousLayer.frame.maxX + spacing
+                sublayer.frame.origin.y = previousLayer.frame.maxY + spacing
             }
         }
     }
     
-    private func fillHeight() {
+    private func fillWidth() {
         effectiveSublayers.forEach {
-            $0.frame.size.height = frame.height
+            $0.frame.size.width = frame.width
         }
     }
 }
