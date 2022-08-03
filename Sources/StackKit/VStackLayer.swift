@@ -77,11 +77,11 @@ open class VStackLayer: CALayer {
             makeSpacing(spacing)
             
         case .autoSpacing:
-            let spacing = (frame.height - effectiveSublayers.map({ $0.frame.size.height }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+            let spacing = autoSpacing()
             makeSpacing(spacing)
             
         case .fillWidth:
-            let spacing = (frame.height - effectiveSublayers.map({ $0.frame.size.height }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+            let spacing = autoSpacing()
             makeSpacing(spacing)
             fillWidth()
             
@@ -110,6 +110,10 @@ open class VStackLayer: CALayer {
 }
 
 extension VStackLayer {
+    
+    private func autoSpacing() -> CGFloat {
+        (frame.height - effectiveSublayers.map({ $0.frame.size.height }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+    }
     
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, sublayer) in effectiveSublayers.enumerated() {
