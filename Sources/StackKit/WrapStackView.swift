@@ -64,25 +64,35 @@ open class WrapStackView: UIView {
         subviews.filter { $0.alpha > 0 && !$0.isHidden && $0.frame.size != .zero }
     }
     
+    open override func addSubview(_ view: UIView) {
+        if let lastViewFrame = effectiveSubviews.last?.frame {
+            view.frame.origin = lastViewFrame.origin
+        }
+        super.addSubview(view)
+    }
+    
     open override func layoutSubviews() {
         super.layoutSubviews()
         
         switch verticalAlignment {
         case .nature:
             for (index, subview) in effectiveSubviews.enumerated() {
-                guard index != 0 else { // index: 0
-                    subview.frame.origin.x = 0
-                    continue
-                }
                 
                 let subviewSize = itemSize(subview)
+                
+                guard index != 0 else { // index: 0
+                    // contentInsets
+                    subview.frame.origin.x = contentInsets.left
+                    subview.frame.origin.y = contentInsets.top
+                    continue
+                }
                 
                 let previousView = effectiveSubviews[index - 1]
                 let x = previousView.frame.maxX + itemSpacing
                 let maxX = x + subviewSize.width
-                if maxX > frame.width { // TODO: contentInsets
+                if maxX > frame.width - contentInsets.right {
                     // new section
-                    subview.frame.origin.x = 0
+                    subview.frame.origin.x = contentInsets.left // contentInsets
                     
                     let upMaxY = effectiveSubviews[...(index - 1)].map { $0.frame.maxY }.max() ?? 0
                     subview.frame.origin.y = upMaxY + lineSpacing
@@ -105,10 +115,20 @@ open class WrapStackView: UIView {
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutSubviews()
         
-        // TODO: contentInsets
-        return effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+        let effectiveViewsSize = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
+        
+        var _size: CGSize = size
+        if size.width == CGFloat.greatestFiniteMagnitude {
+            _size.width = effectiveViewsSize.width
+        }
+        if size.height == CGFloat.greatestFiniteMagnitude {
+            _size.height = effectiveViewsSize.height
+        }
+        
+        _size.height += contentInsets.bottom
+        return _size
     }
 }
 
@@ -118,7 +138,8 @@ extension WrapStackView {
         switch itemSize {
         case .adaptive(let column):
             let itemLength = itemSpacing * CGFloat(column - 1)
-            let calculateWidth = (frame.width - itemLength) / CGFloat(column)
+            let contentHorizontalLength = contentInsets.left + contentInsets.right
+            let calculateWidth = (frame.width - contentHorizontalLength - itemLength) / CGFloat(column)
             let calculateSize = CGSize(width: calculateWidth, height: item.frame.height)
             item.frame.size = calculateSize
             return calculateSize

@@ -119,7 +119,15 @@ open class VStackLayer: CALayer {
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutSublayers()
-        return preferredFrameSize()
+        
+        var _size = contentSize
+        if size.width == CGFloat.greatestFiniteMagnitude {
+            _size.width = contentSize.width
+        }
+        if size.height == CGFloat.greatestFiniteMagnitude {
+            _size.height = contentSize.height
+        }
+        return _size
     }
 }
 
