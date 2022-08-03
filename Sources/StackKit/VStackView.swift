@@ -5,6 +5,26 @@ open class VStackView: UIView {
     public var alignment: VStackAlignment = .center
     public var distribution: VStackDistribution = .autoSpacing
     
+    public required init(
+        alignment: VStackAlignment = .center,
+        distribution: VStackDistribution = .autoSpacing,
+        @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
+    ) {
+        super.init(frame: .zero)
+        
+        self.alignment = alignment
+        self.distribution = distribution
+        
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    
     open var effectiveSubviews: [UIView] {
         subviews.filter { $0.alpha > 0 && !$0.isHidden && $0.frame.size != .zero }
     }
