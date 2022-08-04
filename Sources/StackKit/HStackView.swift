@@ -80,6 +80,10 @@ open class HStackView: UIView {
         }
         return _size
     }
+    
+    open override var intrinsicContentSize: CGSize {
+        sizeThatFits(.zero)
+    }
 }
 
 extension HStackView {

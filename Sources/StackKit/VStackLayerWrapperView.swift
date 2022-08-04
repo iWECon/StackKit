@@ -1,12 +1,5 @@
 import UIKit
 
-@resultBuilder
-public struct VStackLayerWrapperViewContent {
-    static func buildBlock(_ components: UIView...) -> [UIView] {
-        components
-    }
-}
-
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 open class VStackLayerWrapperView: UIView {
     
@@ -84,5 +77,9 @@ open class VStackLayerWrapperView: UIView {
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         vStackLayer.sizeThatFits(size)
+    }
+    
+    open override var intrinsicContentSize: CGSize {
+        sizeThatFits(.zero)
     }
 }

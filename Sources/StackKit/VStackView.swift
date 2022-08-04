@@ -81,6 +81,10 @@ open class VStackView: UIView {
         }
         return _size
     }
+    
+    open override var intrinsicContentSize: CGSize {
+        sizeThatFits(.zero)
+    }
 }
 
 extension VStackView {
