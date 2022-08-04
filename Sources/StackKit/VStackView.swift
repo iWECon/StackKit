@@ -46,11 +46,11 @@ open class VStackView: UIView {
         
         switch alignment {
         case .left:
-            effectiveSubviews.forEach { $0.frame.origin.y = 0 }
+            effectiveSubviews.forEach { $0.frame.origin.x = 0 }
         case .center:
-            effectiveSubviews.forEach { $0.center.y = frame.height / 2 }
+            effectiveSubviews.forEach { $0.center.x = frame.width / 2 }
         case .right:
-            effectiveSubviews.forEach { $0.frame.origin.y = frame.height - $0.frame.height }
+            effectiveSubviews.forEach { $0.frame.origin.x = frame.width - $0.frame.width }
         }
         
         switch distribution {
