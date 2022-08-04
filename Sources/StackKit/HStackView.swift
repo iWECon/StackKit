@@ -88,6 +88,10 @@ open class HStackView: UIView {
         return _size
     }
     
+    open override func sizeToFit() {
+        frame.size = sizeThatFits(.zero)
+    }
+    
     open override var intrinsicContentSize: CGSize {
         sizeThatFits(.zero)
     }

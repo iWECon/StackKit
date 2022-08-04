@@ -51,37 +51,34 @@ open class WrapStackView: UIView {
         if let lastViewFrame = effectiveSubviews.last?.frame {
             view.frame.origin = lastViewFrame.origin
         }
-        tryFixViewSize(view: view)
         super.addSubview(view)
     }
     
-    open override func insertSubview(_ view: UIView, at index: Int) {
-        tryFixViewSize(view: view)
-        super.insertSubview(view, at: index)
+    open override func didAddSubview(_ subview: UIView) {
+        super.didAddSubview(subview)
+        
+        subview._tryFixSize()
     }
     
-    open override func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
-        tryFixViewSize(view: view)
-        super.insertSubview(view, aboveSubview: siblingSubview)
-    }
-    
-    open override func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
-        tryFixViewSize(view: view)
-        super.insertSubview(view, belowSubview: siblingSubview)
-    }
-    
-    // try to fix view size when it is zero
-    private func tryFixViewSize(view: UIView) {
-        if view.frame.size == .zero {
-            view.frame.size = view.intrinsicContentSize
+    private class Attribute: Equatable {
+        var section: Int  // 第几行
+        var subviews: [UIView] = []
+        var hStackView: HStackView = HStackView()
+        
+        required init(section: Int) {
+            self.section = section
         }
-        if view.frame.size == .zero {
-            view.sizeToFit()
+        
+        static func == (lhs: Attribute, rhs: Attribute) -> Bool {
+            lhs.section == rhs.section
         }
     }
+    private var attributes: [Attribute] = []
     
     open override func layoutSubviews() {
         super.layoutSubviews()
+        
+        attributes.removeAll()
         
         switch verticalAlignment {
         case .nature:
@@ -97,6 +94,7 @@ open class WrapStackView: UIView {
                 }
                 
                 let previousView = effectiveSubviews[index - 1]
+                
                 let x = previousView.frame.maxX + itemSpacing
                 let maxX = x + subviewSize.width
                 if maxX > frame.width - contentInsets.right {
@@ -114,10 +112,116 @@ open class WrapStackView: UIView {
             }
             
         case .center:
-            break
+            // 中心点
+            let centerX = frame.width / 2
+            
+            let effectiveSubviews = effectiveSubviews
+            
+            var section = 0
+            for (index, subview) in effectiveSubviews.enumerated() {
+                let subviewSize = itemSize(subview)
+                
+                guard index != 0 else { // index: 0
+                    recordAttribute(section: section, subView: subview)
+                    
+                    let hStackView = hStackView(at: section)
+                    addSubview(hStackView)
+                    hStackView.center.x = centerX
+                    hStackView.frame.origin.y = contentInsets.top
+                    continue
+                }
+                
+                let previousView = effectiveSubviews[index - 1]
+                let subviewAttribute = attribute(withSubview: previousView)
+                let subViewInHStackView = subviewAttribute.hStackView
+                let maxX = subViewInHStackView.frame.width + itemSpacing + subviewSize.width
+                if maxX >= frame.width - contentInsets.right {
+                    // new section
+                    section += 1
+                    
+                    recordAttribute(section: section, subView: subview)
+                    
+                    let hStackView = hStackView(at: section)
+                    addSubview(hStackView)
+                    hStackView.center.x = centerX
+                    hStackView.frame.origin.y = subViewInHStackView.frame.maxY + lineSpacing
+                } else {
+                    // same section
+                    // history frame info
+                    recordAttribute(section: section, subView: subview)
+                    let hStackView = hStackView(at: section)
+                    
+                    hStackView.center.x = frame.width / 2
+                }
+            }
+            
+            moveToSelf()
             
         case .reverse:
             break
+        }
+    }
+    
+    private func moveToSelf() {
+        for attribute in attributes {
+            for subview in attribute.subviews {
+                let superRect = attribute.hStackView.convert(subview.frame, to: self)
+                addSubview(subview)
+                subview.frame = superRect
+            }
+            attribute.subviews.removeAll()
+            attribute.hStackView.removeFromSuperview()
+        }
+    }
+    
+    private func hStackView(at section: Int) -> HStackView {
+        guard attributes.contains(where: { $0.section == section }) else {
+            return .init()
+        }
+        return attributes.first(where: { $0.section == section })!.hStackView
+    }
+    
+    private func attribute(withSubview subview: UIView) -> Attribute {
+        attributes.lazy.first(where: { $0.subviews.lazy.contains(subview) })!
+    }
+    
+    private func views(inSection section: Int) -> [UIView] {
+        guard let attr = attributes.first(where: { $0.section == section }) else {
+            return []
+        }
+        return attr.subviews
+    }
+    
+    private func recordAttribute(section: Int, subView: UIView) {
+        if let attr = attributes.first(where: { $0.section == section }) {
+            if !attr.subviews.contains(subView) { // contains
+                attr.subviews.append(subView)
+                attr.hStackView.addSubview(subView)
+                
+                attr.hStackView.frame.size.height = attr.subviews.map({ $0.frame.size.height }).max() ?? 0
+                let hStackSize = attr.hStackView.sizeThatFits(.zero)
+                attr.hStackView.frame.size = hStackSize
+            }
+        } else { // no contains (means a new section)
+            let attr = Attribute(section: section)
+            attr.subviews.append(subView)
+            attr.hStackView.distribution = .spacing(itemSpacing)
+            switch horizontalAlignment { // set alignment
+            case .top:
+                attr.hStackView.alignment = .top
+            case .center:
+                attr.hStackView.alignment = .center
+            case .bottom:
+                attr.hStackView.alignment = .bottom
+            }
+            subView.frame.origin = .zero
+            attr.hStackView.frame.size = subView.frame.size // first size
+            attr.hStackView.addSubview(subView)
+            
+            let hStackSize = attr.hStackView.sizeThatFits(.zero)
+            attr.hStackView.frame.size = hStackSize
+            
+            attributes.append(attr)
         }
     }
     

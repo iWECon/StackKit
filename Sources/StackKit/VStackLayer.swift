@@ -47,7 +47,7 @@ open class VStackLayer: CALayer {
     }
     
     open func refreshSublayers() {
-        for v in sublayers ?? [] {
+        for v in sublayers ?? [] where v.frame.size == .zero {
             v.frame.size = v.preferredFrameSize()
         }
     }

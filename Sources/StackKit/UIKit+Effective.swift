@@ -10,6 +10,14 @@ extension UIView {
         !_isIneffectiveView
     }
     
+    func _tryFixSize() {
+        if frame.size == .zero {
+            frame.size = intrinsicContentSize
+        }
+        if frame.size == .zero {
+            sizeToFit()
+        }
+    }
 }
 
 extension CALayer {
@@ -21,4 +29,5 @@ extension CALayer {
     var _isEffectiveLayer: Bool {
         !_isIneffectiveLayer
     }
+    
 }

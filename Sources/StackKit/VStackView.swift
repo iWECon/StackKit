@@ -24,13 +24,6 @@ open class VStackView: UIView {
         super.init(coder: coder)
     }
     
-    open override func addSubview(_ view: UIView) {
-        if view.frame.size == .zero {
-            view.sizeToFit()
-        }
-        super.addSubview(view)
-    }
-    
     open var effectiveSubviews: [UIView] {
         subviews.filter { $0._isEffectiveView }
     }
@@ -39,6 +32,12 @@ open class VStackView: UIView {
         effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
+    }
+    
+    open override func didAddSubview(_ subview: UIView) {
+        if subview.frame.size == .zero {
+            subview.sizeToFit()
+        }
     }
     
     open override func layoutSubviews() {
@@ -86,6 +85,10 @@ open class VStackView: UIView {
             _size.height = contentSize.height
         }
         return _size
+    }
+    
+    open override func sizeToFit() {
+        frame.size = sizeThatFits(.zero)
     }
     
     open override var intrinsicContentSize: CGSize {
