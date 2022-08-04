@@ -24,6 +24,12 @@ open class VStackView: UIView {
         super.init(coder: coder)
     }
     
+    open override func addSubview(_ view: UIView) {
+        if view.frame.size == .zero {
+            view.sizeToFit()
+        }
+        super.addSubview(view)
+    }
     
     open var effectiveSubviews: [UIView] {
         subviews.filter { $0.alpha > 0 && !$0.isHidden && $0.frame.size != .zero }

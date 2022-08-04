@@ -51,6 +51,10 @@ open class WrapStackView: UIView {
         if let lastViewFrame = effectiveSubviews.last?.frame {
             view.frame.origin = lastViewFrame.origin
         }
+        
+        if view.frame.size == .zero {
+            view.sizeToFit()
+        }
         super.addSubview(view)
     }
     
