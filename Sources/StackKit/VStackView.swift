@@ -96,10 +96,10 @@ extension VStackView {
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, sublayer) in effectiveSubviews.enumerated() {
             if index == 0 {
-                sublayer.frame.origin.x = 0
+                sublayer.frame.origin.y = 0
             } else {
                 let previousLayer = effectiveSubviews[index - 1]
-                sublayer.frame.origin.x = previousLayer.frame.maxX + spacing
+                sublayer.frame.origin.y = previousLayer.frame.maxY + spacing
             }
         }
     }
