@@ -103,10 +103,10 @@ open class WrapStackView: UIView {
         }.size
         
         var _size = size
-        if size.width == CGFloat.greatestFiniteMagnitude {
+        if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {
             _size.width = effectiveViewsSize.width
         }
-        if size.height == CGFloat.greatestFiniteMagnitude {
+        if size.height == CGFloat.greatestFiniteMagnitude || size.height == 0 {
             _size.height = effectiveViewsSize.height
         }
         
