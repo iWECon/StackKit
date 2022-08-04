@@ -101,6 +101,11 @@ open class HStackLayer: CALayer {
         }
         return _size
     }
+    
+    public func sizeToFit() {
+        let size = sizeThatFits(.zero)
+        self.frame.size = size
+    }
 }
 
 extension HStackLayer {

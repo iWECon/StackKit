@@ -80,6 +80,19 @@ open class WrapStackLayer: CALayer {
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutSublayers()
-        return contentSize
+        
+        var _size = size
+        if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {
+            _size.width = contentSize.width
+        }
+        if size.height == CGFloat.greatestFiniteMagnitude || size.height == 0 {
+            _size.height = contentSize.height
+        }
+        return _size
+    }
+    
+    public func sizeToFit() {
+        let size = sizeThatFits(.zero)
+        self.frame.size = size
     }
 }
