@@ -26,7 +26,7 @@ open class WrapStackLayer: CALayer {
     public var lineSpacing: CGFloat = 0
     
     open var effectiveSublayers: [CALayer] {
-        (sublayers ?? []).lazy.filter { $0.opacity > 0 && !$0.isHidden && $0.frame.size != .zero }
+        (sublayers ?? []).lazy.filter { $0._isEffectiveLayer }
     }
     
     public var contentSize: CGSize {

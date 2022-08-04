@@ -44,18 +44,40 @@ open class WrapStackView: UIView {
     }
     
     public var effectiveSubviews: [UIView] {
-        subviews.filter { $0.alpha > 0 && !$0.isHidden && $0.frame.size != .zero }
+        subviews.filter { $0._isEffectiveView }
     }
     
     open override func addSubview(_ view: UIView) {
         if let lastViewFrame = effectiveSubviews.last?.frame {
             view.frame.origin = lastViewFrame.origin
         }
-        
+        tryFixViewSize(view: view)
+        super.addSubview(view)
+    }
+    
+    open override func insertSubview(_ view: UIView, at index: Int) {
+        tryFixViewSize(view: view)
+        super.insertSubview(view, at: index)
+    }
+    
+    open override func insertSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
+        tryFixViewSize(view: view)
+        super.insertSubview(view, aboveSubview: siblingSubview)
+    }
+    
+    open override func insertSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
+        tryFixViewSize(view: view)
+        super.insertSubview(view, belowSubview: siblingSubview)
+    }
+    
+    // try to fix view size when it is zero
+    private func tryFixViewSize(view: UIView) {
+        if view.frame.size == .zero {
+            view.frame.size = view.intrinsicContentSize
+        }
         if view.frame.size == .zero {
             view.sizeToFit()
         }
-        super.addSubview(view)
     }
     
     open override func layoutSubviews() {

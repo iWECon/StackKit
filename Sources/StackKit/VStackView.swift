@@ -32,7 +32,7 @@ open class VStackView: UIView {
     }
     
     open var effectiveSubviews: [UIView] {
-        subviews.filter { $0.alpha > 0 && !$0.isHidden && $0.frame.size != .zero }
+        subviews.filter { $0._isEffectiveView }
     }
     
     public var contentSize: CGSize {
