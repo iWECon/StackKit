@@ -78,8 +78,6 @@ open class WrapStackView: UIView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         
-        attributes.removeAll()
-        
         switch verticalAlignment {
         case .nature:
             for (index, subview) in effectiveSubviews.enumerated() {
@@ -112,7 +110,6 @@ open class WrapStackView: UIView {
             }
             
         case .center:
-            // 中心点
             let centerX = frame.width / 2
             
             let effectiveSubviews = effectiveSubviews
@@ -147,22 +144,20 @@ open class WrapStackView: UIView {
                     hStackView.frame.origin.y = subViewInHStackView.frame.maxY + lineSpacing
                 } else {
                     // same section
-                    // history frame info
                     recordAttribute(section: section, subView: subview)
                     let hStackView = hStackView(at: section)
                     
-                    hStackView.center.x = frame.width / 2
+                    hStackView.center.x = centerX
                 }
             }
-            
-            moveToSelf()
+            moveAllHStackViewSubviewsToSelf()
             
         case .reverse:
             break
         }
     }
     
-    private func moveToSelf() {
+    private func moveAllHStackViewSubviewsToSelf() {
         for attribute in attributes {
             for subview in attribute.subviews {
                 let superRect = attribute.hStackView.convert(subview.frame, to: self)
@@ -172,6 +167,7 @@ open class WrapStackView: UIView {
             attribute.subviews.removeAll()
             attribute.hStackView.removeFromSuperview()
         }
+        attributes.removeAll()
     }
     
     private func hStackView(at section: Int) -> HStackView {
