@@ -127,7 +127,8 @@ extension WrapStackView {
             let itemLength = itemSpacing * CGFloat(column - 1)
             let contentHorizontalLength = contentInsets.left + contentInsets.right
             let calculateWidth = (frame.width - contentHorizontalLength - itemLength) / CGFloat(column)
-            let calculateSize = CGSize(width: calculateWidth, height: item.frame.height)
+            let itemHeight = item.sizeThatFits(.zero).height
+            let calculateSize = CGSize(width: calculateWidth, height: itemHeight)
             item.frame.size = calculateSize
             return calculateSize
             
