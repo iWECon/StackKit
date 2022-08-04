@@ -236,8 +236,27 @@ open class WrapStackView: UIView {
             _size.height = effectiveViewsSize.height
         }
         
-        _size.height += contentInsets.bottom
+        if !effectiveSubviews.isEmpty {
+            _size.height += contentInsets.bottom
+        }
         return _size
+    }
+    
+    open override func sizeToFit() {
+        layoutSizeToFit(.auto)
+    }
+    
+    public func layoutSizeToFit(_ layout: WrapStackLayout) {
+        let size: CGSize
+        switch layout {
+        case .width:
+            size = sizeThatFits(CGSize(width: frame.width, height: CGFloat.greatestFiniteMagnitude))
+        case .height:
+            size = sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: frame.height))
+        case .auto:
+            size = sizeThatFits(.zero)
+        }
+        frame.size = size
     }
 }
 

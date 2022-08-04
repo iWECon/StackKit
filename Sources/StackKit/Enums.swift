@@ -68,3 +68,13 @@ public enum WrapStackItemSize {
     case fixed(_ size: CGSize)
     case adaptive(column: Int)
 }
+
+public enum WrapStackLayout {
+    /// width fixed, height auto
+    case width
+    /// height fixed, width auto
+    case height
+    
+    // with and height are auto
+    case auto
+}
