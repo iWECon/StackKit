@@ -8,7 +8,7 @@ open class VStackView: UIView {
     public required init(
         alignment: VStackAlignment = .center,
         distribution: VStackDistribution = .autoSpacing,
-        @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
+        @_StackKitVStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         
@@ -71,6 +71,22 @@ open class VStackView: UIView {
             effectiveSubviews.forEach {
                 $0.frame.size.width = w
             }
+        }
+        
+        fillDivider()
+    }
+    
+    private func fillDivider() {
+        let maxWidth = subviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.width }).max() ?? frame.width
+        for divider in subviews.compactMap({ $0 as? DividerView }) {
+            var maxLength = divider.maxLength
+            if maxLength == .greatestFiniteMagnitude {
+                // auto
+                maxLength = maxWidth
+            } else if maxWidth < maxLength {
+                maxLength = maxWidth
+            }
+            divider.frame.size.width = maxLength
         }
     }
     

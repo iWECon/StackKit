@@ -28,7 +28,7 @@ open class HStackLayerWrapperView: UIView {
     public required init(
         alignment: HStackAlignment,
         distribution: HStackDistribution = .autoSpacing,
-        @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
+        @_StackKitHStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         hStackLayer.alignment = alignment

@@ -8,7 +8,7 @@ open class HStackView: UIView {
     public required init(
         alignment: HStackAlignment = .center,
         distribution: HStackDistribution = .autoSpacing,
-        @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
+        @_StackKitHStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         
@@ -72,6 +72,22 @@ open class HStackView: UIView {
             effectiveSubviews.forEach {
                 $0.frame.size.width = w
             }
+        }
+        
+        fillDivider()
+    }
+    
+    private func fillDivider() {
+        let maxHeight = subviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.height }).max() ?? frame.height
+        for divider in subviews.compactMap({ $0 as? DividerView }) {
+            var maxLength = divider.maxLength
+            if maxLength == .greatestFiniteMagnitude {
+                // auto
+                maxLength = maxHeight
+            } else if maxHeight < maxLength {
+                maxLength = maxHeight
+            }
+            divider.frame.size.height = maxLength
         }
     }
     

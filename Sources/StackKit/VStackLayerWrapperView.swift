@@ -28,7 +28,7 @@ open class VStackLayerWrapperView: UIView {
     public required init(
         alignment: VStackAlignment,
         distribution: VStackDistribution = .fillWidth,
-        @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
+        @_StackKitVStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         vStackLayer.alignment = alignment

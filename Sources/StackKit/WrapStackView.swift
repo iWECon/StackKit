@@ -23,7 +23,7 @@ open class WrapStackView: UIView {
         contentInsets: UIEdgeInsets = .zero,
         itemSpacing: CGFloat = 0,
         lineSpacing: CGFloat = 0,
-        @_StackKitViewContentResultBuilder content: () -> [UIView] = { [] }
+        @_StackKitWrapStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         
