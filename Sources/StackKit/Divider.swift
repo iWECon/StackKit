@@ -35,6 +35,16 @@ public struct Divider: _Divider {
 
 class DividerView: UIView, _Divider {
     var maxLength: CGFloat = .greatestFiniteMagnitude
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        isUserInteractionEnabled = false
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 public protocol _StackKitViewDividerResultBuilder {
@@ -45,7 +55,6 @@ public protocol _StackKitViewDividerResultBuilder {
 extension _StackKitHStackContentResultBuilder: _StackKitViewDividerResultBuilder {
     public static func buildExpression(_ expression: Divider) -> [UIView] {
         let view = DividerView()
-        //view.frame.size.height = expression.maxLength
         view.maxLength = expression.maxLength
         view.frame.size.width = expression.thickness
         view.backgroundColor = expression.backgroundColor

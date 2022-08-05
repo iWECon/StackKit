@@ -54,9 +54,4 @@ extension _StackKitViewContentResultBuilderProvider {
 @resultBuilder public struct _StackKitWrapStackContentResultBuilder: _StackKitViewContentResultBuilderProvider { }
 
 @resultBuilder
-public struct _StackKitFreeStackViewContentResultBuilder {
-    
-    public static func buildBlock(_ components: UIView...) -> [UIView] {
-        components
-    }
-}
+public struct _StackKitFreeStackViewContentResultBuilder: _StackKitViewContentResultBuilderProvider { }

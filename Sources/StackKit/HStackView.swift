@@ -24,11 +24,33 @@ open class HStackView: UIView {
         super.init(coder: coder)
     }
     
-    open override func addSubview(_ view: UIView) {
-        if view.frame.size == .zero {
-            view.sizeToFit()
+    open override func didAddSubview(_ subview: UIView) {
+        super.didAddSubview(subview)
+
+        if subview.frame.size == .zero {
+            subview.sizeToFit()
         }
-        super.addSubview(view)
+        
+        // keep spacers between views and spacers have only one spacer
+        guard (subview as? SpacerView) != nil,
+              let index = subviews.firstIndex(where: { $0 == subview })
+        else {
+            return
+        }
+        
+        let previousIndex = index - 1
+        if previousIndex > 0, previousIndex < subviews.count - 1 {
+            if (subviews[previousIndex] as? SpacerView) != nil {
+                subview.removeFromSuperview()
+            }
+        }
+        
+        let nextIndex = index + 1
+        if nextIndex > 0, nextIndex < subviews.count - 1 {
+            if (subviews[nextIndex] as? SpacerView) != nil {
+                subview.removeFromSuperview()
+            }
+        }
     }
     
     open var effectiveSubviews: [UIView] {
@@ -53,6 +75,8 @@ open class HStackView: UIView {
             effectiveSubviews.forEach { $0.frame.origin.y = frame.height - $0.frame.height }
         }
         
+        fillSpacer()
+        
         switch distribution {
         case .spacing(let spacing):
             makeSpacing(spacing)
@@ -75,6 +99,77 @@ open class HStackView: UIView {
         }
         
         fillDivider()
+    }
+    
+    private func isSpacerBetweenViews(_ spacer: SpacerView) -> Bool {
+        guard let index = subviews.firstIndex(of: spacer) else {
+            return false
+        }
+        
+        var isPreviousView = false
+        var isNextView = false
+        
+        let previous = index - 1
+        if previous > 0, previous < subviews.count - 1 {
+            isPreviousView = true
+        }
+        
+        let next = index + 1
+        if next < subviews.count - 1 {
+            isNextView = true
+        }
+        return isPreviousView && isNextView
+    }
+    
+    private func fillSpacer() {
+        let unspacerViews = subviews.filter({ ($0 as? SpacerView) == nil })
+        let betweenInViewsCount = subviews.compactMap({ $0 as? SpacerView }).map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        let unspacerViewsWidth = unspacerViews.map({ $0.frame.width }).reduce(0, { $0 + $1 })
+        let unspacerViewsSpacing: CGFloat
+        
+        if unspacerViews.count == 1 {
+            unspacerViewsSpacing = 0
+        } else {
+            switch distribution {
+            case .spacing(let spacing):
+                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                
+            case .autoSpacing, .fillHeight:
+                unspacerViewsSpacing = autoSpacing() * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
+                
+            case .fill:
+                unspacerViewsSpacing = 0
+            }
+        }
+        
+        let unspacerViewsMaxWidth = unspacerViewsWidth + unspacerViewsSpacing
+        var spacersWidth = (frame.width - unspacerViewsMaxWidth)
+        let spacerWidth = spacersWidth / CGFloat(subviews.count - unspacerViews.count)
+        
+        let spacerViews = subviews.compactMap({ $0 as? SpacerView })
+        let spacerSpecifyViews = spacerViews.filter({ $0.min > .leastNonzeroMagnitude || $0.max < .greatestFiniteMagnitude })
+        // 先找出设定了 min 和 max 的 spacer
+        // 将高度设定完成后减去 spacersHeight 总高度
+        for spacer in spacerSpecifyViews {
+            if spacerWidth > spacer.max {
+                spacer.frame.size.width = spacer.max
+            } else if spacerWidth < spacer.min {
+                spacer.frame.size.width = spacer.min
+            } else {
+                spacer.frame.size.width = spacerWidth
+            }
+            spacersWidth -= spacer.frame.size.width
+            
+            spacer.frame.size.height = 10
+        }
+        
+        // 剩余的高度与没有设定 min 和 max 的 spacer 平分
+        let divideHeight = spacersWidth / CGFloat(spacerViews.count - spacerSpecifyViews.count)
+        for spacer in spacerViews.filter({ $0.min == .leastNonzeroMagnitude && $0.max == .greatestFiniteMagnitude }) {
+            spacer.frame.size.width = divideHeight
+            
+            spacer.frame.size.height = 10
+        }
     }
     
     private func fillDivider() {
@@ -120,12 +215,16 @@ extension HStackView {
     }
     
     private func makeSpacing(_ spacing: CGFloat) {
-        for (index, sublayer) in effectiveSubviews.enumerated() {
+        for (index, subview) in effectiveSubviews.enumerated() {
             if index == 0 {
-                sublayer.frame.origin.x = 0
+                subview.frame.origin.x = 0
             } else {
-                let previousLayer = effectiveSubviews[index - 1]
-                sublayer.frame.origin.x = previousLayer.frame.maxX + spacing
+                let previousView = effectiveSubviews[index - 1]
+                if (previousView as? SpacerView) != nil || (subview as? SpacerView) != nil { // spacer and view no spacing
+                    subview.frame.origin.x = previousView.frame.maxX
+                } else {
+                    subview.frame.origin.x = previousView.frame.maxX + spacing
+                }
             }
         }
     }
