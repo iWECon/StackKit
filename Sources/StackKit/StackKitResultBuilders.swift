@@ -52,6 +52,3 @@ extension _StackKitViewContentResultBuilderProvider {
 
 // MARK: - For WrapStack View
 @resultBuilder public struct _StackKitWrapStackContentResultBuilder: _StackKitViewContentResultBuilderProvider { }
-
-@resultBuilder
-public struct _StackKitFreeStackViewContentResultBuilder: _StackKitViewContentResultBuilderProvider { }

@@ -12,8 +12,13 @@ extension _Divider {
     public var cornerRadius: CGFloat { 0 }
 }
 
-/// In HStack the divier is vertical line
-/// In VStack the divier is horizontal line
+///
+/// In `HStackView` the divier is `vertical` line: |
+/// In `VStackView` the divier is `horizontal` line: ---
+///
+/// 在 `HStackView` 中以竖线显示
+/// 在 `VStackView` 中以横线显示
+///
 public struct Divider: _Divider {
     public var thickness: CGFloat = 1
     public var maxLength: CGFloat = CGFloat.greatestFiniteMagnitude

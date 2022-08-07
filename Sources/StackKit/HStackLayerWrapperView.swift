@@ -53,10 +53,7 @@ open class HStackLayerWrapperView: UIView {
     }
     
     open func appendView(_ view: UIView) {
-        if view.frame.size == .zero {
-            view.layoutSubviews()
-            view.sizeToFit()
-        }
+        view._tryFixSize()
         
         // use view.layer if view is UIImageView
         if view is UIImageView {
