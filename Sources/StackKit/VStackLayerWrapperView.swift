@@ -47,29 +47,33 @@ open class VStackLayerWrapperView: UIView {
         VStackLayer.self
     }
     
-    @available(*, deprecated, message: "use `appendView(_:)` instead")
-    open override func addSubview(_ view: UIView) {
-        super.addSubview(view)
-    }
-    
-    open func appendView(_ view: UIView) {
-        view._tryFixSize()
+    open override func didAddSubview(_ subview: UIView) {
+        super.didAddSubview(subview)
+        
+        defer {
+            subview.removeFromSuperview()
+        }
+        subview._tryFixSize()
         
         // use view.layer if view is UIImageView
-        if view is UIImageView {
-            layer.addSublayer(view.layer)
+        if subview is UIImageView {
+            layer.addSublayer(subview.layer)
             return
         }
         
         // render view to image and create CALayer with it
         // 如果直接使用 view.layer 可能显示会有问题, 例如: UILabel -> _UILabelLayer 无法正常显示文字
-        let image = UIGraphicsImageRenderer(bounds: view.bounds).image { context in
-            view.layer.render(in: context.cgContext)
+        let image = UIGraphicsImageRenderer(bounds: subview.bounds).image { context in
+            subview.layer.render(in: context.cgContext)
         }
         let tempLayer = CALayer()
         tempLayer.contents = image.cgImage
-        tempLayer.bounds = view.bounds
+        tempLayer.bounds = subview.bounds
         layer.addSublayer(tempLayer)
+    }
+    
+    open func appendView(_ subview: UIView) {
+        
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
