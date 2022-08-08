@@ -24,16 +24,6 @@ open class VStackView: UIView {
         super.init(coder: coder)
     }
     
-    open var effectiveSubviews: [UIView] {
-        subviews.filter { $0._isEffectiveView }
-    }
-    
-    public var contentSize: CGSize {
-        effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
-            result.union(rect)
-        }.size
-    }
-    
     open override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
         
@@ -59,6 +49,20 @@ open class VStackView: UIView {
                 subview.removeFromSuperview()
             }
         }
+    }
+    
+    open var effectiveSubviews: [UIView] {
+        subviews.filter { $0._isEffectiveView }
+    }
+    
+    public var contentSize: CGSize {
+        effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+            result.union(rect)
+        }.size
+    }
+    
+    open func hideIfNoEffectiveViews() {
+        self.isHidden = effectiveSubviews.isEmpty
     }
     
     open override func layoutSubviews() {

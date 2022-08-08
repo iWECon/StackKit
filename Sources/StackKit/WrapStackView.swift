@@ -249,10 +249,17 @@ open class WrapStackView: UIView {
     public func layoutSizeToFit(_ layout: WrapStackLayout) {
         let size: CGSize
         switch layout {
-        case .width:
-            size = sizeThatFits(CGSize(width: frame.width, height: CGFloat.greatestFiniteMagnitude))
-        case .height:
-            size = sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: frame.height))
+        case .width(let value):
+            let w = value > 0 ? value : frame.width
+            size = sizeThatFits(CGSize(width: w, height: CGFloat.greatestFiniteMagnitude))
+            
+        case .height(let value):
+            let h = value > 0 ? value : frame.height
+            size = sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: h))
+            
+        case .fit(let _size):
+            size = sizeThatFits(_size)
+            
         case .auto:
             size = sizeThatFits(.zero)
         }

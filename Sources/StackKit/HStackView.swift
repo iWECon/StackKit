@@ -61,6 +61,10 @@ open class HStackView: UIView {
         }.size
     }
     
+    open func hideIfNoEffectiveViews() {
+        self.isHidden = effectiveSubviews.isEmpty
+    }
+    
     open override func layoutSubviews() {
         super.layoutSubviews()
         

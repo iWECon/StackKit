@@ -70,11 +70,18 @@ public enum WrapStackItemSize {
 }
 
 public enum WrapStackLayout {
-    /// width fixed, height auto
-    case width
-    /// height fixed, width auto
-    case height
+    /// 宽度固定，高度自适应
+    /// 0 表示使用当前的宽度
+    case width(_ value: CGFloat = 0)
     
-    // with and height are auto
+    /// 高度固定，宽度自适应
+    /// 0 表示使用当前的高度
+    case height(_ value: CGFloat = 0)
+    
+    /// 给定 size 自适应宽高
+    /// 结果与给定的 size 不一定一致
+    case fit(size: CGSize)
+    
+    /// 宽高都自适应
     case auto
 }
