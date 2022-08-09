@@ -57,7 +57,10 @@ open class VStackLayerWrapperView: UIView {
         
         // use view.layer if view is UIImageView
         if subview is UIImageView {
-            layer.addSublayer(CALayer(layer: subview.layer.mutableCopy()))
+            let imageLayer = CALayer()
+            imageLayer.contents = subview.layer.contents
+            imageLayer.bounds = subview.layer.bounds
+            layer.addSublayer(imageLayer)
             return
         }
         
