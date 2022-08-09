@@ -72,10 +72,6 @@ open class VStackLayerWrapperView: UIView {
         layer.addSublayer(tempLayer)
     }
     
-    open func appendView(_ subview: UIView) {
-        
-    }
-    
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         vStackLayer.sizeThatFits(size)
     }

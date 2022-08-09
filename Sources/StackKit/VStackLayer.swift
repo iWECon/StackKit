@@ -30,7 +30,7 @@ open class VStackLayer: CALayer {
     public required init(
         alignment: VStackAlignment = .center,
         distribution: VStackDistribution = .autoSpacing,
-        @_StackKitLayerContentResultBuilder content: () -> [CALayer] = { [] }
+        @_StackKitVStackLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init()
         

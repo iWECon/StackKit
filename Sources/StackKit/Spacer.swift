@@ -110,7 +110,6 @@ extension _StackKitViewSpacerResultBuilder {
 extension _StackKitHStackContentResultBuilder: _StackKitViewSpacerResultBuilder { }
 extension _StackKitVStackContentResultBuilder: _StackKitViewSpacerResultBuilder { }
 
-
 /**
  HStack(distribution: .spacing(8)) {
     View1()

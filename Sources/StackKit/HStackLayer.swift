@@ -30,7 +30,7 @@ open class HStackLayer: CALayer {
     public required init(
         alignment: HStackAlignment = .center,
         distribution: HStackDistribution = .autoSpacing,
-        @_StackKitLayerContentResultBuilder content: () -> [CALayer] = { [] }
+        @_StackKitHStackLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init()
         
