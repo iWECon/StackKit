@@ -2,6 +2,11 @@
 
 ☝️ 一个和 SwiftUI 写法类似的布局库。
 
+⚠️ 有问题或者新灵感随时可以提 PR 给我。
+
+--- 
+
+
 先看个例子:
 
 // SwiftUI
@@ -49,8 +54,11 @@ HStackView(alignment: .left, distribution: .spacing(14)) {
 
 `VStackView` / `HStackView` 可以互相嵌套，尾随闭包使用 `@resultBuilder` 与 `SwiftUI` 保持一致。
 
+##### 一些特殊说明
 
-## 类说明
+`isHidden || alpha <= 0 || (frame.size == .zero && clipsToBounds == true)` 这样的 UIView 不会被显示也不会占用位置。（在 CALayer 中基本一致）
+
+# 类说明
 
 * `HStackView` / `VStackView`
  
@@ -67,6 +75,8 @@ UIView 子类，正常用法：`view.addSubview(_:)` 即可，自动计算 size�
 UIView 子类，是个类似 Grid / Collection 的 View。
 
 ```swift
+// 关于 verticalAlignment 和 horizontalAlignment 查看 Enums.swift 即可，有详细注解
+
 WrapStackView(
     verticalAlignment: .nature, // 从左到右排列
     horizontalAlignment: .center,
@@ -79,6 +89,8 @@ WrapStackView(
 
 
 #### ⚠️ 下面两个应该不常用，简单说一下：仅作为静态展示使用
+
+* Layer 的用法与 View 一致，参数都一样，只是从 UIView 变成了 CALayer。
 
 * `HStackLayer` / `VStackLayer`
 

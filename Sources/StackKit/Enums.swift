@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by i on 2022/8/4.
-//
-
 import UIKit
 
 // MARK: HStack

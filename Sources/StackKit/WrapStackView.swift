@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by bro on 2022/8/3.
-//
-
 import UIKit
 
 open class WrapStackView: UIView {
