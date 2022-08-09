@@ -61,6 +61,22 @@ UIView 子类，正常用法：`view.addSubview(_:)` 即可，自动计算 size�
 从 SwiftUI 吸取的灵感。可以用在 HStackView 和 VStackView 中。
 
 
+* `WrapStackView`
+
+UIView 子类，是个类似 Grid / Collection 的 View。
+
+```swift
+WrapStackView(
+    verticalAlignment: .nature, // 从左到右排列
+    horizontalAlignment: .center,
+    contentInsets: .zero,
+    itemSpacing: 10,
+    lineSpacing: 10,
+    itemSize: .adaptive(column: 4) // 自动排列，每行 4 个
+)
+```
+
+
 #### ⚠️ 下面两个应该不常用，简单说一下：仅作为静态展示使用
 
 * `HStackLayer` / `VStackLayer`
