@@ -15,16 +15,17 @@ public enum HStackAlignment {
 }
 
 public enum HStackDistribution {
-    /// Specify spacing
+    
+    /// Specify spacing. `The size of the HStack is automatically calculated.`
     case spacing(_ spacing: CGFloat)
     
-    /// Automatic calculate spacing
+    /// Automatic calculate spacing. `The width of the HStack needs to be given.`
     case autoSpacing
     
-    /// The heights are all equal
+    /// The heights are all equal. `The height of the VStack needs to be given.`
     case fillHeight
     
-    /// The widths and heights are all equal
+    /// The widths and heights are all equal. `The size of the HStack needs to be given.`
     case fill
 }
 
@@ -37,30 +38,92 @@ public enum VStackAlignment {
 
 
 public enum VStackDistribution {
-    /// Specify spacing
+    
+    /// Specify spacing. `The size of the VStack is automatically calculated.`
     case spacing(_ spacing: CGFloat)
     
-    /// Automatic calculate spacing
+    /// Automatic calculate spacing. `The height of the VStack needs to be given.`
     case autoSpacing
     
-    /// The widths are all equal
+    /// The widths are all equal. `The width of the VStack needs to be given.`
     case fillWidth
     
-    /// The widths and heights are all equal
+    /// The widths and heights are all equal. `The size of the V Stack needs to be given.`
     case fill
 }
 
 
 // MARK: - Wrap
 public enum WrapStackVerticalAlignment {
+    
+    /// Items are arranged from left to right.
+    ///
+    /// ---------------------        ---------------------
+    /// |                   |        |                   |
+    /// | v1                |    ->  | v1 | v2 | v3      |    << arranged from left to right.
+    /// |                   |        |                   |
+    /// ---------------------        ---------------------
+    ///
     case nature
+    
+    /// Items are arranged from the center.
+    ///
+    /// ---------------------        ---------------------
+    /// |                   |        |                   |
+    /// |        v1         |    ->  |    v1 | v2 | v3   |    << arranged from the center.
+    /// |                   |        |                   |
+    /// ---------------------        ---------------------
+    ///
     case center
+    
+    /// TODO: Not Completed
+    /// Items are arranged from right to left.
+    ///
+    /// ---------------------        ---------------------
+    /// |                   |        |                   |
+    /// |                v1 |    ->  |      v3 | v2 | v1 |    << arranged from right to left.
+    /// |                   |        |                   |
+    /// ---------------------        ---------------------
+    ///
     case reverse
 }
 
 public enum WrapStackHorizontalAlignment {
+    
+    /// Horizontal items are aligned to the top.
+    ///
+    /// ---------------------------------
+    /// |  |----|   |----|              |    << items are aligned to the top.
+    /// |  |    |   | v2 |              |
+    /// |  | v1 |   |----|              |
+    /// |  |    |                       |
+    /// |  |----|                       |
+    /// ---------------------------------
+    ///
     case top
+    
+    /// Horizontal items are aligned to the center.
+    ///
+    /// ---------------------------------
+    /// |  |----|                       |
+    /// |  |    |   |----|              |
+    /// |  | v1 |   | v2 |              |    << items are aligned to the center.
+    /// |  |    |   |----|              |
+    /// |  |----|                       |
+    /// ---------------------------------
+    ///
     case center
+    
+    /// Horizontal items are aligned to the bottom.
+    ///
+    /// ---------------------------------
+    /// |  |----|                       |
+    /// |  |    |                       |
+    /// |  | v1 |   |----|              |
+    /// |  |    |   | v2 |              |
+    /// |  |----|   |----|              |    << items are aligned to the bottom.
+    /// ---------------------------------
+    ///
     case bottom
 }
 
@@ -70,18 +133,15 @@ public enum WrapStackItemSize {
 }
 
 public enum WrapStackLayout {
-    /// 宽度固定，高度自适应
-    /// 0 表示使用当前的宽度
+    /// Fixed width, adaptive height. default is 0, 0 means to use the current width.
     case width(_ value: CGFloat = 0)
     
-    /// 高度固定，宽度自适应
-    /// 0 表示使用当前的高度
+    /// Fixed height, adaptive width. default is 0, 0 means to use the current height.
     case height(_ value: CGFloat = 0)
     
-    /// 给定 size 自适应宽高
-    /// 结果与给定的 size 不一定一致
+    /// Calculate the size with a given size, and the final size may not be the same as the size.
     case fit(size: CGSize)
     
-    /// 宽高都自适应
+    /// Width and height adaptive.
     case auto
 }
