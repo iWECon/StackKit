@@ -35,7 +35,7 @@ open class VStackLayerWrapperView: UIView {
         vStackLayer.distribution = distribution
         
         for v in content() {
-            appendView(v)
+            addSubview(v)
         }
     }
     
