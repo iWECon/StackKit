@@ -40,7 +40,8 @@ HStackView(alignment: .left, distribution: .spacing(14)) {
 |  |-------|                                  |
 |  |       |                                  |
 |  |       |                      StackKit    |
-|  | Image |  ...Spacer......    Version: 1   |
+|  | Image |  ...Spacer......    ----------   |
+|  |       |                     Version: 1   |
 |  |       |                                  |
 |  |-------|                                  |
 -----------------------------------------------
