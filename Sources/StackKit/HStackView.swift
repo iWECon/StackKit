@@ -161,7 +161,7 @@ extension HStackView {
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
-        return viewsWidth() / CGFloat(unspacerViews.count - spacersCount - 1)
+        return (frame.width - viewsWidth() - spacerSpecifyLength()) / CGFloat(unspacerViews.count - spacersCount - 1)
     }
     
     private func viewsWidth() -> CGFloat {
@@ -237,7 +237,7 @@ extension HStackView {
     }
     
     private func isSpacerBetweenViews(_ spacer: SpacerView) -> Bool {
-        guard let index = subviews.firstIndex(of: spacer) else {
+        guard let index = effectiveSubviews.firstIndex(of: spacer) else {
             return false
         }
         
@@ -245,12 +245,12 @@ extension HStackView {
         var isNextView = false
         
         let previous = index - 1
-        if previous > 0, previous < subviews.count - 1 {
+        if previous > 0, previous < effectiveSubviews.count - 1 {
             isPreviousView = true
         }
         
         let next = index + 1
-        if next < subviews.count - 1 {
+        if next < effectiveSubviews.count - 1 {
             isNextView = true
         }
         return isPreviousView && isNextView

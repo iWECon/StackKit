@@ -5,16 +5,6 @@ open class VStackLayer: CALayer {
     public var alignment: VStackAlignment = .center
     public var distribution: VStackDistribution = .autoSpacing
     
-    public var contentSize: CGSize {
-        effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
-            result.union(rect)
-        }.size
-    }
-    
-    open override func preferredFrameSize() -> CGSize {
-        contentSize
-    }
-    
     public required override init() {
         super.init()
     }
@@ -46,6 +36,16 @@ open class VStackLayer: CALayer {
         (sublayers ?? []).lazy.filter { $0._isEffectiveLayer }
     }
     
+    public var contentSize: CGSize {
+        effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+            result.union(rect)
+        }.size
+    }
+    
+    open override func preferredFrameSize() -> CGSize {
+        contentSize
+    }
+    
     open func refreshSublayers() {
         for v in sublayers ?? [] where v.frame.size == .zero {
             v.frame.size = v.preferredFrameSize()
@@ -74,24 +74,33 @@ open class VStackLayer: CALayer {
         
         switch distribution {
         case .spacing(let spacing):
+            fillDivider()
+            fillSpacer()
+            
             makeSpacing(spacing)
             
         case .autoSpacing:
+            fillDivider()
+            fillSpacer()
+            
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
         case .fillWidth:
+            fillDivider()
+            fillSpacer()
+            
             let spacing = autoSpacing()
             makeSpacing(spacing)
             fillWidth()
             
         case .fill:
+            fillDivider()
+            fillSpecifySpacer()
+            fillSpacer()
+            fillHeight()
+            makeSpacing(0)
             fillWidth()
-            
-            let h = frame.height / CGFloat(effectiveSublayers.count)
-            effectiveSublayers.forEach {
-                $0.frame.size.height = h
-            }
         }
     }
     
@@ -116,8 +125,31 @@ open class VStackLayer: CALayer {
 
 extension VStackLayer {
     
+    private func spacerLayers() -> [SpacerLayer] {
+        effectiveSublayers.compactMap({ $0 as? SpacerLayer })
+    }
+    private func dividerLayers() -> [DividerLayer] {
+        effectiveSublayers.compactMap({ $0 as? DividerLayer })
+    }
+    
+    private func viewsWithoutSpacer() -> [CALayer] {
+        effectiveSublayers.filter({ ($0 as? SpacerLayer) == nil })
+    }
+    private func viewsWithoutSpacerAndDivider() -> [CALayer] {
+        effectiveSublayers.filter({ ($0 as? SpacerLayer) == nil && ($0 as? DividerLayer) == nil })
+    }
+}
+
+extension VStackLayer {
+    
     private func autoSpacing() -> CGFloat {
-        (frame.height - effectiveSublayers.map({ $0.frame.size.height }).reduce(0, { $0 + $1 })) / CGFloat(effectiveSublayers.count)
+        let unspacerViews = viewsWithoutSpacer()
+        let spacersCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(unspacerViews.count - spacersCount - 1)
+    }
+    
+    private func viewsHeight() -> CGFloat {
+        viewsWithoutSpacer().map({ $0.frame.height }).reduce(0, +)
     }
     
     private func makeSpacing(_ spacing: CGFloat) {
@@ -126,7 +158,12 @@ extension VStackLayer {
                 sublayer.frame.origin.y = 0
             } else {
                 let previousLayer = effectiveSublayers[index - 1]
-                sublayer.frame.origin.y = previousLayer.frame.maxY + spacing
+                if (previousLayer as? SpacerLayer) != nil || (sublayer as? SpacerLayer) != nil {
+                    // spacer and view no spacing
+                    sublayer.frame.origin.y = previousLayer.frame.maxY
+                } else {
+                    sublayer.frame.origin.y = previousLayer.frame.maxY + spacing
+                }
             }
         }
     }
@@ -134,6 +171,116 @@ extension VStackLayer {
     private func fillWidth() {
         effectiveSublayers.forEach {
             $0.frame.size.width = frame.width
+        }
+    }
+    
+    ///
+    /// 填充高度, 所有视图（排除 spacer）高度一致
+    private func fillHeight() {
+        let maxH = frame.height - spacerSpecifyLength() - dividerSpecifyLength()
+        var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
+        
+        let unspacersView = viewsWithoutSpacerAndDivider()
+        h = maxH / CGFloat(unspacersView.count)
+        for subview in unspacersView {
+            subview.frame.size.height = h
+        }
+    }
+}
+
+extension VStackLayer {
+    
+    private func dividerSpecifyLength() -> CGFloat {
+        dividerLayers()
+            .map({ $0.thickness })
+            .reduce(0, +)
+    }
+    
+    private func fillDivider() {
+        let maxWidth = effectiveSublayers.filter({ ($0 as? DividerLayer) == nil }).map({ $0.frame.size.width }).max() ?? frame.width
+        for divider in effectiveSublayers.compactMap({ $0 as? DividerLayer }) {
+            var maxLength = divider.maxLength
+            if maxLength == .greatestFiniteMagnitude {
+                // auto
+                maxLength = maxWidth
+            } else if maxWidth < maxLength {
+                maxLength = maxWidth
+            }
+            divider.frame.size.width = maxLength
+        }
+    }
+    
+}
+
+// MARK: Spacer
+extension VStackLayer {
+    
+    // 取出固定 length 的 spacer
+    private func spacerSpecifyLength() -> CGFloat {
+        spacerLayers()
+            .map({ $0.setLength })
+            .reduce(0, +)
+    }
+    
+    private func isSpacerBetweenViews(_ spacer: SpacerLayer) -> Bool {
+        guard let index = effectiveSublayers.firstIndex(of: spacer) else {
+            return false
+        }
+        
+        var isPreviousView = false
+        var isNextView = false
+        
+        let previous = index - 1
+        if previous > 0, previous < effectiveSublayers.count - 1 {
+            isPreviousView = true
+        }
+        
+        let next = index + 1
+        if next < effectiveSublayers.count - 1 {
+            isNextView = true
+        }
+        return isPreviousView && isNextView
+    }
+    
+    private func fillSpecifySpacer() {
+        let spacers = effectiveSublayers.compactMap({ $0 as? SpacerLayer })
+        for spacer in spacers {
+            spacer.fitSize(value: 0, for: .height)
+        }
+    }
+    
+    /// 填充 spacer
+    private func fillSpacer() {
+        let unspacerViews = viewsWithoutSpacer()
+        guard unspacerViews.count != effectiveSublayers.count else { return }
+        
+        let betweenInViewsCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        let unspacerViewsHeight = viewsHeight()
+        // 排除 spacer view 后的间距
+        let unspacerViewsSpacing: CGFloat
+        
+        if unspacerViews.count == 1 {
+            unspacerViewsSpacing = 0
+        } else {
+            switch distribution {
+            case .spacing(let spacing):
+                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                
+            case .autoSpacing, .fillWidth:
+                unspacerViewsSpacing = autoSpacing() * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
+                
+            case .fill:
+                unspacerViewsSpacing = 0
+            }
+        }
+        
+        let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
+        let spacersHeight = (frame.height - unspacerViewsMaxHeight)
+        let spacerWidth = spacersHeight / CGFloat(self.spacerLayers().count)
+        
+        let spacerViews = self.spacerLayers()
+        for spacer in spacerViews {
+            spacer.fitSize(value: spacerWidth, for: .height)
         }
     }
 }

@@ -55,12 +55,30 @@ open class HStackLayerWrapperView: UIView {
         }
         subview._tryFixSize()
         
-        // use view.layer if view is UIImageView
+        // Copy UIImageView
         if subview is UIImageView {
             let imageLayer = CALayer()
             imageLayer.contents = subview.layer.contents
             imageLayer.bounds = subview.layer.bounds
+            imageLayer.backgroundColor = subview.layer.backgroundColor
             layer.addSublayer(imageLayer)
+            return
+        }
+        
+        // Divider View to Dividerlayer
+        if let dividerView = subview as? DividerView {
+            let dividerLayer = DividerLayer()
+            dividerLayer.maxLength = dividerView.maxLength
+            dividerLayer.frame.size.width = dividerView.thickness
+            dividerLayer.backgroundColor = dividerView.backgroundColor?.cgColor
+            dividerLayer.cornerRadius = dividerView.cornerRadius
+            layer.addSublayer(dividerLayer)
+            return
+        }
+        
+        if let spacerView = subview as? SpacerView {
+            let spacerLayer = spacerView.spacerLayer
+            layer.addSublayer(spacerLayer)
             return
         }
         
@@ -72,6 +90,7 @@ open class HStackLayerWrapperView: UIView {
         let tempLayer = CALayer()
         tempLayer.contents = image.cgImage
         tempLayer.bounds = subview.bounds
+        tempLayer.backgroundColor = subview.backgroundColor?.cgColor
         layer.addSublayer(tempLayer)
     }
     
