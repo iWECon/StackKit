@@ -57,7 +57,7 @@ open class HStackLayerWrapperView: UIView {
         
         // use view.layer if view is UIImageView
         if subview is UIImageView {
-            layer.addSublayer(subview.layer)
+            layer.addSublayer(CALayer(layer: subview.layer.mutableCopy()))
             return
         }
         
