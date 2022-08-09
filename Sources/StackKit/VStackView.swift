@@ -161,7 +161,7 @@ extension VStackView {
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
-        return viewsHeight() / CGFloat(unspacerViews.count - spacersCount - 1)
+        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(unspacerViews.count - spacersCount - 1)
     }
     
     private func viewsHeight() -> CGFloat {
