@@ -131,7 +131,8 @@ open class VStackView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        layoutSubviews()
+        setNeedsLayout()
+        layoutIfNeeded()
         
         var _size = size
         if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {

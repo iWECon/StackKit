@@ -3,13 +3,19 @@ import UIKit
 var _FitTypeKey = "_FitTypeKey"
 
 public enum FitType {
+    /// Just only call `.sizeToFit()`.
     case content
     
+    /// The width fixed.
     case widthFixed(_ value: CGFloat)
+    /// The height fixed.
     case heightFixed(_ value: CGFloat)
     
-    case widthFlexible(_ value: CGFloat)
-    case heightFlexible(_ value: CGFloat)
+    /// The width flexible.
+    case widthFlexible(_ value: CGFloat? = nil, min: CGFloat? = nil, max: CGFloat? = nil)
+    
+    /// The height flexible.
+    case heightFlexible(_ value: CGFloat? = nil, min: CGFloat? = nil, max: CGFloat? = nil)
     
     case size(_ size: CGSize)
 }
@@ -29,7 +35,7 @@ extension UIView: FitSize {
             return fitType
         }
         set {
-            objc_setAssociatedObject(self, &_FitTypeKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &_FitTypeKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
     
@@ -41,7 +47,7 @@ extension UIView: FitSize {
     func _fitSize(with fitType: FitType = .content) {
         
         defer {
-            layoutSubviews()
+            setNeedsLayout()
         }
         
         switch fitType {
@@ -66,22 +72,68 @@ extension UIView: FitSize {
             fitSize.height = value
             self.frame.size = fitSize
             
-        case .widthFlexible(let value):
+        case .widthFlexible(let value, let minWidth, let maxWidth):
+            var fitWidth: CGFloat = superSize()?.width ?? .greatestFiniteMagnitude
+            if let value = value {
+                fitWidth = value
+            }
+            if let minWidth = minWidth, minWidth > fitWidth {
+                fitWidth = minWidth
+            }
+            if let maxWidth = maxWidth, maxWidth < fitWidth {
+                fitWidth = maxWidth
+            }
             let size = CGSize(
-                width: value,
+                width: fitWidth,
                 height: CGFloat.greatestFiniteMagnitude
             )
-            self.frame.size = sizeThatFits(size)
+            var newSize = sizeThatFits(size)
+            if let minWidth = minWidth, minWidth > newSize.width {
+                newSize.width = minWidth
+            }
+            if let maxWidth = maxWidth, maxWidth < newSize.width {
+                newSize.width = maxWidth
+            }
+            self.frame.size = newSize
             
-        case .heightFlexible(let value):
+        case .heightFlexible(let value, let minHeight, let maxHeight):
+            var fitHeight: CGFloat = superSize()?.height ?? .greatestFiniteMagnitude
+            if let value = value {
+                fitHeight = value
+            }
+            if let minHeight = minHeight, minHeight > fitHeight {
+                fitHeight = minHeight
+            }
+            if let maxHeight = maxHeight, maxHeight < fitHeight {
+                fitHeight = maxHeight
+            }
             let size = CGSize(
                 width: CGFloat.greatestFiniteMagnitude,
-                height: value
+                height: fitHeight
             )
-            self.frame.size = sizeThatFits(size)
+            var newSize = sizeThatFits(size)
+            if let minHeight = minHeight, minHeight > newSize.height {
+                newSize.height = minHeight
+            }
+            if let maxHeight = maxHeight, maxHeight < newSize.height {
+                newSize.height = maxHeight
+            }
+            self.frame.size = newSize
             
         case .size(let size):
             self.frame.size = size
         }
+    }
+    
+    private func superSize() -> CGSize? {
+        var spv = superview
+        while spv != nil {
+            if spv?.frame.size == .zero {
+                spv = spv?.superview
+                continue
+            }
+            break
+        }
+        return spv?.frame.size
     }
 }
