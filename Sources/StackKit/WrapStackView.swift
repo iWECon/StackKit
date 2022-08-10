@@ -36,6 +36,19 @@ open class WrapStackView: UIView {
         super.init(coder: coder)
     }
     
+    public func addContent(@_StackKitWrapStackContentResultBuilder _ content: () -> [UIView]) {
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
+    public func resetContent(@_StackKitWrapStackContentResultBuilder _ content: () -> [UIView]) {
+        subviews.forEach { $0.removeFromSuperview() }
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
     public var effectiveSubviews: [UIView] {
         subviews.filter { $0._isEffectiveView }
     }
