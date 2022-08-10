@@ -43,6 +43,19 @@ open class HStackLayerWrapperView: UIView {
         super.init(coder: coder)
     }
     
+    public func addContent(@_StackKitHStackContentResultBuilder _ content: () -> [UIView]) {
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
+    public func resetContent(@_StackKitHStackContentResultBuilder _ content: () -> [UIView]) {
+        subviews.forEach { $0.removeFromSuperview() }
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
     open override class var layerClass: AnyClass {
         HStackLayer.self
     }

@@ -32,6 +32,19 @@ open class VStackLayer: CALayer {
         }
     }
     
+    public func addContent(@_StackKitVStackLayerContentResultBuilder _ content: () -> [CALayer]) {
+        for v in content() {
+            addSublayer(v)
+        }
+    }
+    
+    public func resetContent(@_StackKitVStackLayerContentResultBuilder _ content: () -> [CALayer]) {
+        sublayers?.forEach { $0.removeFromSuperlayer() }
+        for v in content() {
+            addSublayer(v)
+        }
+    }
+    
     open var effectiveSublayers: [CALayer] {
         (sublayers ?? []).lazy.filter { $0._isEffectiveLayer }
     }

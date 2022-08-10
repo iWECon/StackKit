@@ -24,6 +24,19 @@ open class VStackView: UIView {
         super.init(coder: coder)
     }
     
+    public func addContent(@_StackKitVStackContentResultBuilder _ content: () -> [UIView]) {
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
+    public func resetContent(@_StackKitVStackContentResultBuilder _ content: () -> [UIView]) {
+        subviews.forEach { $0.removeFromSuperview() }
+        for v in content() {
+            addSubview(v)
+        }
+    }
+    
     open override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
         
