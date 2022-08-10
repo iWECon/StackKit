@@ -73,7 +73,7 @@ open class VStackLayerWrapperView: UIView {
             let imageLayer = CALayer()
             imageLayer.contents = subview.layer.contents
             imageLayer.bounds = subview.layer.bounds
-            imageLayer.backgroundColor = subview.layer.backgroundColor
+            imageLayer.backgroundColor = subview.backgroundColor?.cgColor
             layer.addSublayer(imageLayer)
             return
         }
@@ -103,7 +103,6 @@ open class VStackLayerWrapperView: UIView {
         let tempLayer = CALayer()
         tempLayer.contents = image.cgImage
         tempLayer.bounds = subview.bounds
-        tempLayer.backgroundColor = subview.backgroundColor?.cgColor
         layer.addSublayer(tempLayer)
     }
     
