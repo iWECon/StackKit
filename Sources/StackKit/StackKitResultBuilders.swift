@@ -21,6 +21,9 @@ extension _StackKitViewContentResultBuilderProvider {
     public static func buildExpression(_ expression: Void) -> [UIView] {
         []
     }
+    public static func buildExpression<T>(_ expression: StackKitCompatible<T>) -> [T] where T: UIView {
+        [expression.view]
+    }
 }
 
 // MARK: For VStack View
