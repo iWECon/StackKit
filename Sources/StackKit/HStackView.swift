@@ -79,17 +79,8 @@ open class HStackView: UIView {
     }
     
     private func tryResizeStackView() {
-        subviews.compactMap({ $0 as? HStackView }).forEach {
-            $0.sizeToFit()
-        }
-        subviews.compactMap({ $0 as? VStackView }).forEach {
-            $0.sizeToFit()
-        }
-        subviews.compactMap({ $0 as? HStackLayerWrapperView }).forEach {
-            $0.sizeToFit()
-        }
-        subviews.compactMap({ $0 as? VStackLayerWrapperView }).forEach {
-            $0.sizeToFit()
+        subviews.forEach { fitSize in
+            fitSize._fitSize(with: fitSize.stackKitFitType)
         }
     }
     
