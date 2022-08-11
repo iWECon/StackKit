@@ -22,18 +22,15 @@ public enum FitType {
 }
 
 protocol FitSize {
-    var stackKitFitType: FitType { get set }
-    func _fitSize(with fitType: FitType)
+    var stackKitFitType: FitType? { get set }
+    func _fitSize(with fitType: FitType?)
 }
 
 extension UIView: FitSize {
     
-    var stackKitFitType: FitType {
+    var stackKitFitType: FitType? {
         get {
-            guard let fitType = objc_getAssociatedObject(self, &_FitTypeKey) as? FitType else {
-                return .content
-            }
-            return fitType
+            objc_getAssociatedObject(self, &_FitTypeKey) as? FitType
         }
         set {
             objc_setAssociatedObject(self, &_FitTypeKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
@@ -45,21 +42,26 @@ extension UIView: FitSize {
         return self
     }
     
-    func _fitSize(with fitType: FitType = .content) {
+    func _fitSize(with fitType: FitType? = .content) {
         
         defer {
             setNeedsLayout()
         }
         
-        if fitType == .content, let w = _width, let h = _height {
+        var size = resolveSize()
+        
+        if let w = size.width, let h = size.height { // 指定了 size（width & height) 优先使用 size
             self.frame.size = CGSize(width: w, height: h)
             return
         }
         
-        // 优先从设定的 width 和 height 获取
-        var fitWidth = _width ?? CGFloat.greatestFiniteMagnitude
-        var fitHeight = _height ?? CGFloat.greatestFiniteMagnitude
-        var size = resolveSize()
+        guard let fitType = fitType else {
+            self.frame.size = sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude))
+            return
+        }
+        
+        var fitWidth = CGFloat.greatestFiniteMagnitude
+        var fitHeight = CGFloat.greatestFiniteMagnitude
         
         switch fitType {
         case .width, .widthFlexible:
@@ -75,9 +77,8 @@ extension UIView: FitSize {
                 fitHeight = bounds.height
             }
         case .content:
-            let fs = bounds.size
-            fitWidth = size.width ?? fs.width
-            fitHeight = size.height ?? fs.width
+            fitWidth = size.width ?? bounds.width
+            fitHeight = size.height ?? bounds.height
         }
         
         fitWidth = _validateValue(fitWidth)
@@ -86,11 +87,7 @@ extension UIView: FitSize {
         let sizeThatFits = sizeThatFits(CGSize(width: fitWidth, height: fitHeight))
         
         switch fitType {
-        case .content:
-            size = Size(width: sizeThatFits.width, height: sizeThatFits.height)
-            _fixedSize(&size)
-            
-        case .width, .widthFlexible, .height, .heightFlexible:
+        case .width, .height, .widthFlexible, .heightFlexible:
             if fitWidth != .greatestFiniteMagnitude {
                 size.width = fitType.isFlexible ? sizeThatFits.width : fitWidth
             } else {
@@ -102,17 +99,14 @@ extension UIView: FitSize {
             } else {
                 size.height = sizeThatFits.height
             }
+        case .content:
+            size = Size(width: sizeThatFits.width, height: sizeThatFits.height)
         }
         
         size.width = applyMinMax(toWidth: size.width)
         size.height = applyMinMax(toHeight: size.height)
-        _fixedSize(&size)
         
-        if let w = size.width, let h = size.height {
-            self.bounds.size = CGSize(width: w, height: h)
-        } else {
-            fatalError("Size has some error.")
-        }
+        self.frame.size = size.cgSize
     }
     
     private func _validateValue(_ value: CGFloat?) -> CGFloat {
@@ -137,6 +131,10 @@ extension UIView {
     struct Size {
         var width: CGFloat?
         var height: CGFloat?
+        
+        var cgSize: CGSize {
+            CGSize(width: width ?? 0, height: height ?? 0)
+        }
     }
     
     func resolveSize() -> Size {
