@@ -32,7 +32,7 @@ class SpacerView: UIView, _Spacer {
     var min: CGFloat = .leastNonzeroMagnitude
     var max: CGFloat = .greatestFiniteMagnitude
     
-    var setLength: CGFloat = -1
+    var setLength: CGFloat = 0
     
     required init(length: CGFloat, min: CGFloat, max: CGFloat) {
         super.init(frame: .zero)
@@ -73,15 +73,15 @@ class SpacerView: UIView, _Spacer {
         
         switch size {
         case .width:
-            frame.size.width = length
+            frame.size.width = Swift.max(0, length)
         case .height:
-            frame.size.height = length
+            frame.size.height = Swift.max(0, length)
         }
-        self.setLength = length
+        self.setLength = Swift.max(0, length)
     }
     
     var minLength: CGFloat {
-        if setLength != -1 {
+        if setLength != 0 {
             return setLength
         }
         if length != .greatestFiniteMagnitude {
@@ -107,7 +107,7 @@ class SpacerLayer: CALayer, _Spacer {
     var min: CGFloat = .leastNonzeroMagnitude
     var max: CGFloat = .greatestFiniteMagnitude
     
-    var setLength: CGFloat = -1
+    var setLength: CGFloat = 0
     
     required init(length: CGFloat, min: CGFloat, max: CGFloat) {
         super.init()
@@ -150,15 +150,15 @@ class SpacerLayer: CALayer, _Spacer {
         
         switch size {
         case .width:
-            frame.size.width = length
+            frame.size.width = Swift.max(0, length)
         case .height:
-            frame.size.height = length
+            frame.size.height = Swift.max(0, length)
         }
-        self.setLength = length
+        self.setLength = Swift.max(0, length)
     }
     
     var minLength: CGFloat {
-        if setLength != -1 {
+        if setLength != 0 {
             return setLength
         }
         if length != .greatestFiniteMagnitude {

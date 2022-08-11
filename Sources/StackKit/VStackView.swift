@@ -78,8 +78,16 @@ open class VStackView: UIView {
         self.isHidden = effectiveSubviews.isEmpty
     }
     
+    private func tryResizeStackView() {
+        subviews.forEach { fitSize in
+            fitSize._fitSize(with: fitSize.stackKitFitType)
+        }
+    }
+    
     open override func layoutSubviews() {
         super.layoutSubviews()
+        
+        tryResizeStackView()
         
         switch alignment {
         case .left:
@@ -123,7 +131,8 @@ open class VStackView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        layoutSubviews()
+        setNeedsLayout()
+        layoutIfNeeded()
         
         var _size = size
         if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {
@@ -174,7 +183,11 @@ extension VStackView {
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
-        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(unspacerViews.count - spacersCount - 1)
+        let number = unspacerViews.count - spacersCount - 1
+        if number <= 0 {
+            return 0
+        }
+        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat( number)
     }
     
     private func viewsHeight() -> CGFloat {
@@ -252,23 +265,17 @@ extension VStackView {
     }
     
     private func isSpacerBetweenViews(_ spacer: SpacerView) -> Bool {
-        guard let index = subviews.firstIndex(of: spacer) else {
+        guard let index = effectiveSubviews.firstIndex(of: spacer) else {
             return false
         }
         
-        var isPreviousView = false
-        var isNextView = false
-        
-        let previous = index - 1
-        if previous > 0, previous < subviews.count - 1 {
-            isPreviousView = true
+        guard effectiveSubviews.count >= 3 else {
+            return false
         }
         
-        let next = index + 1
-        if next < subviews.count - 1 {
-            isNextView = true
-        }
-        return isPreviousView && isNextView
+        let start: Int = 1
+        let end: Int = effectiveSubviews.count - 2
+        return (start ... end).contains(index)
     }
     
     /// 填充 spacer 最小值
