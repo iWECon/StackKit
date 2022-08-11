@@ -3,7 +3,6 @@ import UIKit
 var _FitTypeKey = "_FitTypeKey"
 
 public enum FitType {
-    /// Just only call `.sizeToFit()`.
     case content
     
     case width
@@ -57,8 +56,9 @@ extension UIView: FitSize {
             return
         }
         
-        var fitWidth = CGFloat.greatestFiniteMagnitude
-        var fitHeight = CGFloat.greatestFiniteMagnitude
+        // 优先从设定的 width 和 height 获取
+        var fitWidth = _width ?? CGFloat.greatestFiniteMagnitude
+        var fitHeight = _height ?? CGFloat.greatestFiniteMagnitude
         var size = resolveSize()
         
         switch fitType {
@@ -76,15 +76,19 @@ extension UIView: FitSize {
             }
         case .content:
             let fs = bounds.size
-            fitWidth = fs.width
-            fitHeight = fs.height
+            fitWidth = size.width ?? fs.width
+            fitHeight = size.height ?? fs.width
         }
+        
+        fitWidth = _validateValue(fitWidth)
+        fitHeight = _validateValue(fitHeight)
         
         let sizeThatFits = sizeThatFits(CGSize(width: fitWidth, height: fitHeight))
         
         switch fitType {
         case .content:
             size = Size(width: sizeThatFits.width, height: sizeThatFits.height)
+            _fixedSize(&size)
             
         case .width, .widthFlexible, .height, .heightFlexible:
             if fitWidth != .greatestFiniteMagnitude {
@@ -102,11 +106,28 @@ extension UIView: FitSize {
         
         size.width = applyMinMax(toWidth: size.width)
         size.height = applyMinMax(toHeight: size.height)
+        _fixedSize(&size)
         
         if let w = size.width, let h = size.height {
             self.bounds.size = CGSize(width: w, height: h)
         } else {
             fatalError("Size has some error.")
+        }
+    }
+    
+    private func _validateValue(_ value: CGFloat?) -> CGFloat {
+        guard let value = value, value > 0, value.isFinite else {
+            return .greatestFiniteMagnitude
+        }
+        return value
+    }
+    
+    private func _fixedSize(_ size: inout Size) {
+        if let w = _width {
+            size.width = w
+        }
+        if let h = _height {
+            size.height = h
         }
     }
 }
