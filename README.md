@@ -31,9 +31,9 @@ HStackView(alignment: .left, distribution: .spacing(14)) {
 
     VStackView {
         // 便捷初始化 需要通过 extension UILabel 自己添加
-        UILabel(text: "StackKit", font: .semibold(18), color: .red)
+        UILabel(text: "StackKit", font: .semibold(18), color: .red).stack.maxWidth(120).sizeToFit(.height)
         Divider() // 支持 Divider
-        UILabel(text: "Version: 1", font: .medium(14), color: .gray)
+        UILabel(text: "Version: 1", font: .medium(14), color: .gray).stack.maxWidth(80).sizeToFit(.height)
     }
     
 }

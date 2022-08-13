@@ -159,6 +159,12 @@ extension StackKitCompatible where Base: UIView {
         return self
     }
     
+    public func size(_ size: CGSize) -> Self {
+        view._width = size.width
+        view._height = size.height
+        return self
+    }
+    
     public func sizeToFit(_ fitType: FitType = .content) -> Self {
         view.stackKitFitType = fitType
         return self
