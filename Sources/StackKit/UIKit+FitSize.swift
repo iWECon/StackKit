@@ -54,9 +54,8 @@ extension UIView: FitSize {
         var size = resolveSize()
         
         if let w = size.width, let h = size.height { // 指定了 size（width & height) 优先使用 size
-            let size = CGSize(width: w, height: h)
-            let _ = sizeThatFits(size)
-            self.frame.size = size
+            let _ = sizeThatFits(.zero)
+            self.frame.size = CGSize(width: w, height: h)
             return
         }
         
@@ -64,18 +63,20 @@ extension UIView: FitSize {
         var fitHeight = CGFloat.greatestFiniteMagnitude
         
         switch fitType {
-        case .width, .widthFlexible, .height, .heightFlexible:
+        case .width, .widthFlexible:
             if let w = applyMinMax(toWidth: size.width) {
                 fitWidth = w
             } else {
                 fitWidth = bounds.width
             }
             
+        case .height, .heightFlexible:
             if let h = applyMinMax(toHeight: size.height) {
                 fitHeight = h
             } else {
                 fitHeight = bounds.height
             }
+            
         case .content:
             fitWidth = size.width ?? bounds.width
             fitHeight = size.height ?? bounds.height

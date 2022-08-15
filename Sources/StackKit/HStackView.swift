@@ -134,14 +134,7 @@ open class HStackView: UIView {
         setNeedsLayout()
         layoutIfNeeded()
         
-        var _size = size
-        if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {
-            _size.width = contentSize.width
-        }
-        if size.height == CGFloat.greatestFiniteMagnitude || size.height == 0 {
-            _size.height = contentSize.height
-        }
-        return _size
+        return contentSize
     }
     
     open override func sizeToFit() {
