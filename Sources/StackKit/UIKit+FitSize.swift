@@ -22,15 +22,18 @@ public enum FitType {
 }
 
 protocol FitSize {
-    var stackKitFitType: FitType? { get set }
-    func _fitSize(with fitType: FitType?)
+    var stackKitFitType: FitType { get set }
+    func _fitSize(with fitType: FitType)
 }
 
 extension UIView: FitSize {
     
-    var stackKitFitType: FitType? {
+    var stackKitFitType: FitType {
         get {
-            objc_getAssociatedObject(self, &_FitTypeKey) as? FitType
+            guard let fitType = objc_getAssociatedObject(self, &_FitTypeKey) as? FitType else {
+                return .content
+            }
+            return fitType
         }
         set {
             objc_setAssociatedObject(self, &_FitTypeKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
@@ -42,7 +45,7 @@ extension UIView: FitSize {
         return self
     }
     
-    func _fitSize(with fitType: FitType? = .content) {
+    func _fitSize(with fitType: FitType) {
         
         defer {
             setNeedsLayout()
@@ -51,12 +54,9 @@ extension UIView: FitSize {
         var size = resolveSize()
         
         if let w = size.width, let h = size.height { // 指定了 size（width & height) 优先使用 size
-            self.frame.size = CGSize(width: w, height: h)
-            return
-        }
-        
-        guard let fitType = fitType else {
-            self.frame.size = sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude))
+            let size = CGSize(width: w, height: h)
+            let _ = sizeThatFits(size)
+            self.frame.size = size
             return
         }
         
@@ -64,13 +64,13 @@ extension UIView: FitSize {
         var fitHeight = CGFloat.greatestFiniteMagnitude
         
         switch fitType {
-        case .width, .widthFlexible:
+        case .width, .widthFlexible, .height, .heightFlexible:
             if let w = applyMinMax(toWidth: size.width) {
                 fitWidth = w
             } else {
                 fitWidth = bounds.width
             }
-        case .height, .heightFlexible:
+            
             if let h = applyMinMax(toHeight: size.height) {
                 fitHeight = h
             } else {
