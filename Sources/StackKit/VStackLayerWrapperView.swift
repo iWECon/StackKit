@@ -69,9 +69,14 @@ open class VStackLayerWrapperView: UIView {
         subview._tryFixSize()
         
         // Copy UIImageView
-        if subview is UIImageView {
+        if let imageView = subview as? UIImageView {
             let imageLayer = CALayer()
-            imageLayer.contents = subview.layer.contents
+            // fix subview.layer.contents is nil below on iOS 15?
+            // test on iOS 14.3, subview.layer.contents is nil,
+            // test on iOS 15, subview.layer.contents has some value.
+//            imageLayer.contents = subview.layer.contents
+            
+            imageLayer.contents = imageView.image?.cgImage
             imageLayer.bounds = subview.layer.bounds
             imageLayer.backgroundColor = subview.backgroundColor?.cgColor
             layer.addSublayer(imageLayer)
