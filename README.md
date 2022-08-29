@@ -6,7 +6,12 @@
 
 --- 
 
-# Demo Codes
+# Demo
+
+#### Preview
+![Demo](Demo/preview.png)
+
+#### Demo Codes
 ``` 
 import UIKit
 import StackKit
@@ -223,8 +228,6 @@ class ViewController: UIViewController {
     }
 }
 ```
-
-![Demo](Demo/preview.gif)
 
 ##### 一些特殊说明
 
