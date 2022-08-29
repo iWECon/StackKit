@@ -88,12 +88,14 @@ open class VStackLayer: CALayer {
         switch distribution {
         case .spacing(let spacing):
             fillDivider()
+            fillSpecifySpacer()
             fillSpacer()
             
             makeSpacing(spacing)
             
         case .autoSpacing:
             fillDivider()
+            fillSpecifySpacer()
             fillSpacer()
             
             let spacing = autoSpacing()
@@ -101,6 +103,7 @@ open class VStackLayer: CALayer {
             
         case .fillWidth:
             fillDivider()
+            fillSpecifySpacer()
             fillSpacer()
             
             let spacing = autoSpacing()
@@ -141,6 +144,9 @@ extension VStackLayer {
     private func spacerLayers() -> [SpacerLayer] {
         effectiveSublayers.compactMap({ $0 as? SpacerLayer })
     }
+    private func dynamicSpacerLayers() -> [SpacerLayer] {
+        effectiveSublayers.compactMap({ $0 as? SpacerLayer }).filter({ $0.length == .greatestFiniteMagnitude })
+    }
     private func dividerLayers() -> [DividerLayer] {
         effectiveSublayers.compactMap({ $0 as? DividerLayer })
     }
@@ -158,7 +164,8 @@ extension VStackLayer {
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
-        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(unspacerViews.count - spacersCount - 1)
+        let number = unspacerViews.count - spacersCount - 1
+        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(max(1, number))
     }
     
     private func viewsHeight() -> CGFloat {
@@ -288,8 +295,8 @@ extension VStackLayer {
         }
         
         let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
-        let spacersHeight = (frame.height - unspacerViewsMaxHeight)
-        let spacerWidth = spacersHeight / CGFloat(self.spacerLayers().count)
+        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.spacerSpecifyLength())
+        let spacerWidth = spacersHeight / CGFloat(self.dynamicSpacerLayers().count)
         
         let spacerViews = self.spacerLayers()
         for spacer in spacerViews {
