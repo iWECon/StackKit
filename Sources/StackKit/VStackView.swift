@@ -101,12 +101,14 @@ open class VStackView: UIView {
         switch distribution {
         case .spacing(let spacing):
             fillDivider()
+            fillSpecifySpacer()
             fillSpacer()
             
             makeSpacing(spacing)
             
         case .autoSpacing:
             fillDivider()
+            fillSpecifySpacer()
             fillSpacer()
             
             let spacing = autoSpacing()
@@ -114,6 +116,7 @@ open class VStackView: UIView {
             
         case .fillWidth:
             fillDivider()
+            fillSpecifySpacer()
             fillSpacer()
             
             let spacing = autoSpacing()
@@ -151,6 +154,9 @@ extension VStackView {
     private func spacerViews() -> [SpacerView] {
         effectiveSubviews.compactMap({ $0 as? SpacerView })
     }
+    private func dynamicSpacerViews() -> [SpacerView] {
+        effectiveSubviews.compactMap({ $0 as? SpacerView }).filter({ $0.length == .greatestFiniteMagnitude })
+    }
     private func dividerViews() -> [DividerView] {
         effectiveSubviews.compactMap({ $0 as? DividerView })
     }
@@ -177,10 +183,7 @@ extension VStackView {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        if number <= 0 {
-            return 0
-        }
-        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat( number)
+        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(max(1, number))
     }
     
     private func viewsHeight() -> CGFloat {
@@ -308,8 +311,8 @@ extension VStackView {
         
         // 非 spacerView 的所有宽度
         let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
-        let spacersHeight = (frame.height - unspacerViewsMaxHeight)
-        let spacerHeight = spacersHeight / CGFloat(self.spacerViews().count)
+        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.spacerSpecifyLength())
+        let spacerHeight = spacersHeight / CGFloat(self.dynamicSpacerViews().count)
         
         let spacerViews = self.spacerViews()
         for spacer in spacerViews {

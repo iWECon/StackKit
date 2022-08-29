@@ -1,20 +1,15 @@
-# StackKit
+//
+//  ViewController.swift
+//  TestStackKit
+//
+//  Created by i on 2022/8/3.
+//
 
-☝️ 一个和 SwiftUI 写法类似的布局库。
-
-⚠️ 有问题或者新灵感随时可以提 PR 给我。
-
---- 
-
-# Demo Codes
-``` 
 import UIKit
 import StackKit
+import PinLayout
 
-// 演示代码使用的 PinLayout 而非 SnapKit
-// StackKit 内部使用 `view.sizeToFit()` 计算大小, 也是支持 `SnapKit` (AutoLayout)
-import PinLayout 
-
+/// Designed for `iPhone 12`
 class ViewController: UIViewController {
     
     let content = HStackView {
@@ -222,68 +217,3 @@ class ViewController: UIViewController {
         descriptionContent.pin.below(of: vContent).horizontally(12).marginTop(20).sizeToFit(.width)
     }
 }
-```
-
-![Demo](Demo/preview.gif)
-
-##### 一些特殊说明
-
-`isHidden || alpha <= 0 || (frame.size == .zero && clipsToBounds == true)` 这样的 UIView 不会被显示也不会占用位置。（在 CALayer 中一致）
-
-# 类说明
-
-* `HStackView` / `VStackView`
- 
-UIView 子类，正常用法：`view.addSubview(_:)` 即可，自动计算 size，调用 `view.sizeToFit()`，添加的子视图可使用 AutoLayout 或 frame 配置 size。
-
-
-* `Divider` / `Spacer`
-
-从 SwiftUI 吸取的灵感。可以用在 HStackView 和 VStackView 中。
-
-
-* `WrapStackView`
-
-UIView 子类，是个类似 Grid / Collection 的 View。
-
-```swift
-// 关于 verticalAlignment 和 horizontalAlignment 查看 Enums.swift 即可，有详细注解
-
-WrapStackView(
-    verticalAlignment: .nature, // 从左到右排列
-    horizontalAlignment: .center,
-    contentInsets: .zero,
-    itemSpacing: 10,
-    lineSpacing: 10,
-    itemSize: .adaptive(column: 4) // 自动排列，每行 4 个
-)
-```
-
-
-#### ⚠️ 下面两个应该不常用，简单说一下：仅作为静态展示使用
-
-* Layer 的用法与 View 一致，参数都一样，只是从 UIView 变成了 CALayer。
-
-* `HStackLayer` / `VStackLayer`
-
-这两个是 CALayer 的子类，用来作静态展示时用的。
-
-
-* `HStackLayerWrapperView` / `VStackLayerWrapperView`
-
-这两个是 UIView 的之类，但是添加 UIView 进去的时候，会被转换成 CALayer 进行显示，也是用来做静态布局。
-
---- 
-
-emmm... 配图啥的有空的时候我再传，现在自己测试过也在项目里用了，么得问题。
-
-
-
-
-# 安装方式
-
-现在就 SwiftPM，有 Pod 需求的可以提 PR，不然我也懒。因为这个布局都是硬算的，没有用其他第三方，作为独立的库，我觉得 SwiftPM 省事儿。
-
-```swift
-.package(url: "https://github.com/iWECon/StackKit.git", from: "1.0.0")
-```

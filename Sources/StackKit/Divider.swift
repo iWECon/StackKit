@@ -28,12 +28,12 @@ public struct Divider: _Divider {
     public init(
         thickness: CGFloat = 1,
         maxLength: CGFloat = CGFloat.greatestFiniteMagnitude,
-        backgroundColor: UIColor = .gray,
+        color: UIColor = .gray,
         cornerRadius: CGFloat = 0
     ) {
         self.thickness = thickness
         self.maxLength = maxLength
-        self.color = backgroundColor
+        self.color = color
         self.cornerRadius = cornerRadius
     }
 }
