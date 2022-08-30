@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  WrapStackDemoViewController.swift
 //  Demo
 //
 //  Created by i on 2022/8/31.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class WrapStackDemoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
