@@ -159,7 +159,7 @@ open class WrapStackView: UIView {
             moveAllHStackViewSubviewsToSelf()
             
         case .reverse:
-            break
+            fatalError("`.reverse` is not currently supported")
         }
     }
     
