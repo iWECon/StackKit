@@ -24,6 +24,9 @@ extension _StackKitViewContentResultBuilderProvider {
     public static func buildExpression<T>(_ expression: StackKitCompatible<T>) -> [T] where T: UIView {
         [expression.view]
     }
+    public static func buildExpression(_ expression: [UIView]) -> [UIView] {
+        expression
+    }
     // parse `for ... in ...`
     public static func buildArray(_ components: [[UIView]]) -> [UIView] {
         components.flatMap({ $0 })
@@ -64,6 +67,9 @@ extension _StackKitLayerContentResultBuilder {
     }
     public static func buildExpression(_ expression: Void) -> [CALayer] {
         []
+    }
+    public static func buildExpression(_ expression: [CALayer]) -> [CALayer] {
+        expression
     }
     // parse `for ... in ...`
     public static func buildArray(_ components: [[CALayer]]) -> [CALayer] {
