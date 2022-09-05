@@ -24,6 +24,14 @@ extension _StackKitViewContentResultBuilderProvider {
     public static func buildExpression<T>(_ expression: StackKitCompatible<T>) -> [T] where T: UIView {
         [expression.view]
     }
+    // parse `for ... in ...`
+    public static func buildArray(_ components: [[UIView]]) -> [UIView] {
+        components.flatMap({ $0 })
+    }
+    // parse  `if #available`
+    public static func buildLimitedAvailability(_ component: [UIView]) -> [UIView] {
+        component
+    }
 }
 
 // MARK: For VStack View
@@ -56,6 +64,14 @@ extension _StackKitLayerContentResultBuilder {
     }
     public static func buildExpression(_ expression: Void) -> [CALayer] {
         []
+    }
+    // parse `for ... in ...`
+    public static func buildArray(_ components: [[CALayer]]) -> [CALayer] {
+        components.flatMap({ $0 })
+    }
+    // parse  `if #available`
+    public static func buildLimitedAvailability(_ component: [CALayer]) -> [CALayer] {
+        component
     }
 }
 
