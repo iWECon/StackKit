@@ -80,7 +80,7 @@ open class VStackView: UIView {
     
     private func tryResizeStackView() {
         subviews.forEach { fitSize in
-            fitSize._fitSize(with: fitSize.stackKitFitType)
+            fitSize._fitSize(with: fitSize._stackKit_fitType)
         }
     }
     

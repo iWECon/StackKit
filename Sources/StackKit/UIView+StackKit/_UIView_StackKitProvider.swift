@@ -12,81 +12,64 @@ struct _UIView_StackKitKeys {
 }
 
 protocol _UIView_StackKitProvider {
-    var _width: CGFloat? { get set }
-    var _height: CGFloat? { get set }
+    var _stackKit_width: CGFloat? { get set }
+    var _stackKit_height: CGFloat? { get set }
     
-    var _minWidth: CGFloat? { get set }
-    var _maxWidth: CGFloat? { get set }
+    var _stackKit_minWidth: CGFloat? { get set }
+    var _stackKit_maxWidth: CGFloat? { get set }
     
-    var _minHeight: CGFloat? { get set }
-    var _maxHeight: CGFloat? { get set }
+    var _stackKit_minHeight: CGFloat? { get set }
+    var _stackKit_maxHeight: CGFloat? { get set }
 }
 
 extension UIView: _UIView_StackKitProvider {
-    var _width: CGFloat? {
+    
+    var _stackKit_width: CGFloat? {
         get {
-            guard let value = Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.widthKey) else {
-                return nil
-            }
-            return value
+            Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.widthKey)
         }
         set {
             Runtime.setCGFloatProperty(self, key: &_UIView_StackKitKeys.widthKey, newValue)
         }
     }
-    var _height: CGFloat? {
+    var _stackKit_height: CGFloat? {
         get {
-            guard let value = Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.heightKey) else {
-                return nil
-            }
-            return value
+            Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.heightKey)
         }
         set {
             Runtime.setCGFloatProperty(self, key: &_UIView_StackKitKeys.heightKey, newValue)
         }
     }
-    var _minWidth: CGFloat? {
+    var _stackKit_minWidth: CGFloat? {
         get {
-            guard let value = Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.minWidthKey) else {
-                return nil
-            }
-            return value
+            Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.minWidthKey)
         }
         set {
             Runtime.setCGFloatProperty(self, key: &_UIView_StackKitKeys.minWidthKey, newValue)
         }
     }
     
-    var _maxWidth: CGFloat? {
+    var _stackKit_maxWidth: CGFloat? {
         get {
-            guard let value = Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.maxWidthKey) else {
-                return nil
-            }
-            return value
+            Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.maxWidthKey)
         }
         set {
             Runtime.setCGFloatProperty(self, key: &_UIView_StackKitKeys.maxWidthKey, newValue)
         }
     }
     
-    var _minHeight: CGFloat? {
+    var _stackKit_minHeight: CGFloat? {
         get {
-            guard let value = Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.minHeightKey) else {
-                return nil
-            }
-            return value
+            Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.minHeightKey)
         }
         set {
             Runtime.setCGFloatProperty(self, key: &_UIView_StackKitKeys.minHeightKey, newValue)
         }
     }
     
-    var _maxHeight: CGFloat? {
+    var _stackKit_maxHeight: CGFloat? {
         get {
-            guard let value = Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.maxHeightKey) else {
-                return nil
-            }
-            return value
+            Runtime.getCGFloatProperty(self, key: &_UIView_StackKitKeys.maxHeightKey)
         }
         set {
             Runtime.setCGFloatProperty(self, key: &_UIView_StackKitKeys.maxHeightKey, newValue)
