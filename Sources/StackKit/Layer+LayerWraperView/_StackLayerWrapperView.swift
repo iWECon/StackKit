@@ -7,7 +7,6 @@ open class _StackLayerWrapperView: UIView {
         defer {
             subview.removeFromSuperview()
         }
-        subview._tryFixSize()
         
         // Copy UIImageView
         if convertUIImageView(subview) {
