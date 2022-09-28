@@ -1,6 +1,6 @@
 import UIKit
 
-var _FitTypeKey = "_FitTypeKey"
+var _StackKit_FitTypeKey = "_StackKit_FitTypeKey"
 
 public enum FitType {
     case content
@@ -22,26 +22,26 @@ public enum FitType {
 }
 
 protocol FitSize {
-    var stackKitFitType: FitType { get set }
+    var _stackKit_fitType: FitType { get set }
     func _fitSize(with fitType: FitType)
 }
 
 extension UIView: FitSize {
     
-    var stackKitFitType: FitType {
+    var _stackKit_fitType: FitType {
         get {
-            guard let fitType = objc_getAssociatedObject(self, &_FitTypeKey) as? FitType else {
+            guard let fitType = objc_getAssociatedObject(self, &_StackKit_FitTypeKey) as? FitType else {
                 return .content
             }
             return fitType
         }
         set {
-            objc_setAssociatedObject(self, &_FitTypeKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            objc_setAssociatedObject(self, &_StackKit_FitTypeKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
     
     func fitSize(with fitType: FitType) -> Self {
-        self.stackKitFitType = fitType
+        self._stackKit_fitType = fitType
         return self
     }
     
@@ -118,10 +118,10 @@ extension UIView: FitSize {
     }
     
     private func _fixedSize(_ size: inout Size) {
-        if let w = _width {
+        if let w = _stackKit_width {
             size.width = w
         }
-        if let h = _height {
+        if let h = _stackKit_height {
             size.height = h
         }
     }
@@ -140,10 +140,10 @@ extension UIView {
     
     func resolveSize() -> Size {
         var size = Size()
-        if let _width = _width {
+        if let _width = _stackKit_width {
             size.width = _width
         }
-        if let _height = _height {
+        if let _height = _stackKit_height {
             size.height = _height
         }
         return size
@@ -153,12 +153,12 @@ extension UIView {
         var result = width
         
         // Handle minWidth
-        if let minWidth = _minWidth, minWidth > (result ?? 0) {
+        if let minWidth = _stackKit_minWidth, minWidth > (result ?? 0) {
             result = minWidth
         }
         
         // Handle maxWidth
-        if let maxWidth = _maxWidth, maxWidth < (result ?? CGFloat.greatestFiniteMagnitude) {
+        if let maxWidth = _stackKit_maxWidth, maxWidth < (result ?? CGFloat.greatestFiniteMagnitude) {
             result = maxWidth
         }
         return result
@@ -168,12 +168,12 @@ extension UIView {
         var result = height
         
         // Handle minWidth
-        if let minWidth = _minHeight, minWidth > (result ?? 0) {
+        if let minWidth = _stackKit_minHeight, minWidth > (result ?? 0) {
             result = minWidth
         }
         
         // Handle maxWidth
-        if let maxWidth = _maxHeight, maxWidth < (result ?? CGFloat.greatestFiniteMagnitude) {
+        if let maxWidth = _stackKit_maxHeight, maxWidth < (result ?? CGFloat.greatestFiniteMagnitude) {
             result = maxWidth
         }
         

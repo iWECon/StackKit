@@ -15,10 +15,10 @@ public enum HStackDistribution {
     /// Automatic calculate spacing. `The width of the HStack needs to be given.`
     case autoSpacing
     
-    /// The heights are all equal. `The height of the VStack needs to be given.`
+    /// The height of subviews are equal. `The height of the VStack needs to be given.`
     case fillHeight
     
-    /// The widths and heights are all equal. `The size of the HStack needs to be given.`
+    /// The width and height of subviews are equal. `The size of the HStack needs to be given.`
     case fill
 }
 
@@ -69,7 +69,7 @@ public enum WrapStackVerticalAlignment {
     ///
     case center
     
-    /// TODO: Not Completed
+    /// TODO: ⚠️ Not Completed
     /// Items are arranged from right to left.
     ///
     /// ---------------------        ---------------------

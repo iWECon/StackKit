@@ -159,7 +159,7 @@ open class WrapStackView: UIView {
             moveAllHStackViewSubviewsToSelf()
             
         case .reverse:
-            break
+            fatalError("`.reverse` is not currently supported")
         }
     }
     
@@ -228,20 +228,14 @@ open class WrapStackView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        layoutSubviews()
+        setNeedsLayout()
+        layoutIfNeeded()
         
         let effectiveViewsSize = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
         
-        var _size = size
-        if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {
-            _size.width = effectiveViewsSize.width
-        }
-        if size.height == CGFloat.greatestFiniteMagnitude || size.height == 0 {
-            _size.height = effectiveViewsSize.height
-        }
-        
+        var _size = effectiveViewsSize
         if !effectiveSubviews.isEmpty {
             _size.height += contentInsets.bottom
         }

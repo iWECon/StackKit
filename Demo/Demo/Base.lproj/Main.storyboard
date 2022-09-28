@@ -1,57 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="9VV-h8-9cl">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--StackKit-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="StackKit" id="BYZ-38-t0r" customClass="ViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="M84-Lf-Gfo">
+                                <rect key="frame" x="87.5" y="375.5" width="239" height="145.5"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="06f-Ws-ezl">
+                                        <rect key="frame" x="0.0" y="0.0" width="239" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="H/VStackView"/>
+                                        <connections>
+                                            <segue destination="hGA-TO-DpM" kind="show" id="CVz-1t-QBY"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYP-HX-gHv">
+                                        <rect key="frame" x="0.0" y="55.5" width="239" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="H/VStackLayerWrapperView"/>
+                                        <connections>
+                                            <segue destination="5WQ-Nd-2jr" kind="show" id="Knm-qG-ruH"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dpb-UY-wFq">
+                                        <rect key="frame" x="0.0" y="111" width="239" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="WrapStackView"/>
+                                        <connections>
+                                            <segue destination="qy3-1p-iRp" kind="show" id="npM-Qe-FDz"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="M84-Lf-Gfo" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="10N-EX-KhS"/>
+                            <constraint firstItem="M84-Lf-Gfo" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="qWS-2L-hpF"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="z2B-f1-UEW"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="123"/>
+            <point key="canvasLocation" x="1047.8260869565217" y="122.54464285714285"/>
         </scene>
-        <!--Table Test Controller-->
-        <scene sceneID="DCd-yH-R8t">
+        <!--H/VStackView-->
+        <scene sceneID="Lai-fH-3ho">
             <objects>
-                <viewController id="miv-rh-b6j" customClass="TableTestController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Ifw-ua-NXc">
+                <viewController title="H/VStackView" id="hGA-TO-DpM" customClass="HVStackDemoViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mll-Mp-2Dl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="1UO-FL-vFn">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="nx4-ec-HFM"/>
+                        <viewLayoutGuide key="safeArea" id="6o0-HA-K4I"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="1UO-FL-vFn" firstAttribute="leading" secondItem="nx4-ec-HFM" secondAttribute="leading" id="5D0-rr-qCq"/>
-                            <constraint firstAttribute="bottom" secondItem="1UO-FL-vFn" secondAttribute="bottom" id="V0g-GX-2E1"/>
-                            <constraint firstItem="1UO-FL-vFn" firstAttribute="top" secondItem="Ifw-ua-NXc" secondAttribute="top" id="mBq-0V-pzW"/>
-                            <constraint firstItem="1UO-FL-vFn" firstAttribute="trailing" secondItem="nx4-ec-HFM" secondAttribute="trailing" id="o1A-RI-38v"/>
-                        </constraints>
                     </view>
-                    <connections>
-                        <outlet property="tableView" destination="1UO-FL-vFn" id="DCR-vn-NHi"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="H/VStackView" largeTitleDisplayMode="never" id="4PE-vd-hu4"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OmY-xq-Ccm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Aln-yL-DfB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2034.7826086956522" y="117.85714285714285"/>
+            <point key="canvasLocation" x="2077" y="-122"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="g2K-6U-C2D">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9VV-h8-9cl" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="yVL-2F-E2I">
+                        <rect key="frame" x="0.0" y="48" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="QXo-RR-hQX"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5be-hy-ttz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="122.54464285714285"/>
+        </scene>
+        <!--WrapStackView-->
+        <scene sceneID="P9g-St-lB2">
+            <objects>
+                <viewController id="qy3-1p-iRp" customClass="WrapStackDemoViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fjy-hD-x18">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="WwL-1y-PNn"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="WrapStackView" largeTitleDisplayMode="never" id="yrG-AE-OeY"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1JQ-CP-Uo0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2077" y="555"/>
+        </scene>
+        <!--H/VStackLayerWrapperView-->
+        <scene sceneID="9vs-48-r50">
+            <objects>
+                <viewController id="5WQ-Nd-2jr" customClass="HVStackWrapperViewDemoViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UXA-yy-xad">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="S0H-ab-HM3"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="H/VStackLayerWrapperView" id="lcg-7o-MOp"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eb2-QC-Y1T" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2077" y="-790"/>
         </scene>
     </scenes>
     <resources>

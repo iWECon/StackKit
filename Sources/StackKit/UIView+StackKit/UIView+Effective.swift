@@ -11,12 +11,8 @@ extension UIView {
     }
     
     func _tryFixSize() {
-        if frame.size == .zero {
-            frame.size = intrinsicContentSize
-        }
-        if frame.size == .zero {
-            sizeToFit()
-        }
+        guard frame.size == .zero else { return }
+        sizeToFit()
     }
 }
 
