@@ -8,6 +8,8 @@ open class _StackLayerWrapperView: UIView {
             subview.removeFromSuperview()
         }
         
+        subview._fitSize(with: subview._stackKit_fitType)
+        
         // Copy UIImageView
         if convertUIImageView(subview) {
             return
@@ -50,7 +52,7 @@ open class _StackLayerWrapperView: UIView {
         let spacerLayer = spacerView.spacerLayer
         layer.addSublayer(spacerLayer)
         
-        return false
+        return true
     }
     
     private func convertViewToImage(_ subview: UIView) {

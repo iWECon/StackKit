@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "lookinserver",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/QMUI/LookinServer/",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "e50111d5d1e504c7d0a17f1d82574e357e03bea9"
+      }
+    },
+    {
       "identity" : "pinlayout",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/layoutbox/pinlayout",

@@ -30,7 +30,7 @@ open class HStackLayerWrapperView: _StackLayerWrapperView {
     }
     
     public required init(
-        alignment: HStackAlignment,
+        alignment: HStackAlignment = .center,
         distribution: HStackDistribution = .autoSpacing,
         @_StackKitHStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {

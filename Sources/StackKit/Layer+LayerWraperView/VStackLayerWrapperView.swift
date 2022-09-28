@@ -30,8 +30,8 @@ open class VStackLayerWrapperView: _StackLayerWrapperView {
     }
     
     public required init(
-        alignment: VStackAlignment,
-        distribution: VStackDistribution = .fillWidth,
+        alignment: VStackAlignment = .center,
+        distribution: VStackDistribution = .autoSpacing,
         @_StackKitVStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)

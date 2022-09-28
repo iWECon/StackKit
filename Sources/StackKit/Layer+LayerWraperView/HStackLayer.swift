@@ -1,6 +1,6 @@
 import UIKit
 
-open class HStackLayer: CALayer {
+open class HStackLayer: CALayer, _StackLayerProvider {
     
     public var alignment: HStackAlignment = .center
     public var distribution: HStackDistribution = .autoSpacing
@@ -45,10 +45,6 @@ open class HStackLayer: CALayer {
         }
     }
     
-    open var effectiveSublayers: [CALayer] {
-        (sublayers ?? []).lazy.filter { $0._isEffectiveLayer }
-    }
-    
     public var contentSize: CGSize {
         effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
@@ -56,7 +52,9 @@ open class HStackLayer: CALayer {
     }
     
     open override func preferredFrameSize() -> CGSize {
-        contentSize
+        setNeedsLayout()
+        setNeedsDisplay()
+        return contentSize
     }
     
     open func refreshSublayers() {
@@ -128,31 +126,11 @@ open class HStackLayer: CALayer {
 
 extension HStackLayer {
     
-    private func spacerLayers() -> [SpacerLayer] {
-        effectiveSublayers.compactMap({ $0 as? SpacerLayer })
-    }
-    private func dynamicSpacerLayers() -> [SpacerLayer] {
-        effectiveSublayers.compactMap({ $0 as? SpacerLayer }).filter({ $0.length == .greatestFiniteMagnitude })
-    }
-    private func dividerLayers() -> [DividerLayer] {
-        effectiveSublayers.compactMap({ $0 as? DividerLayer })
-    }
-    
-    private func viewsWithoutSpacer() -> [CALayer] {
-        effectiveSublayers.filter({ ($0 as? SpacerLayer) == nil })
-    }
-    private func viewsWithoutSpacerAndDivider() -> [CALayer] {
-        effectiveSublayers.filter({ ($0 as? SpacerLayer) == nil && ($0 as? DividerLayer) == nil })
-    }
-}
-
-extension HStackLayer {
-    
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return (frame.width - viewsWidth() - spacerSpecifyLength()) / CGFloat(max(1, number))
+        return Swift.max(0, (frame.width - viewsWidth() - spacerSpecifyLength()) / CGFloat(max(1, number)))
     }
     
     private func viewsWidth() -> CGFloat {
@@ -232,19 +210,13 @@ extension HStackLayer {
             return false
         }
         
-        var isPreviousView = false
-        var isNextView = false
-        
-        let previous = index - 1
-        if previous > 0, previous < effectiveSublayers.count - 1 {
-            isPreviousView = true
+        guard effectiveSublayers.count >= 3 else {
+            return false
         }
         
-        let next = index + 1
-        if next < effectiveSublayers.count - 1 {
-            isNextView = true
-        }
-        return isPreviousView && isNextView
+        let start: Int = 1
+        let end: Int = effectiveSublayers.count - 2
+        return (start ... end).contains(index)
     }
     
     private func fillSpecifySpacer() {

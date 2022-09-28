@@ -37,7 +37,7 @@ class SpacerLayer: CALayer, _Spacer {
         case width, height
     }
     func fitSize(value: CGFloat, for size: Size) {
-        let length: CGFloat
+        var length: CGFloat = 0
         if isDefine {
             length = self.length
         } else if isCustomRange {
@@ -45,12 +45,13 @@ class SpacerLayer: CALayer, _Spacer {
         } else {
             length = value
         }
+        length = Swift.max(0, length)
         
         switch size {
         case .width:
-            frame.size.width = Swift.max(0, length)
+            frame.size.width = length
         case .height:
-            frame.size.height = Swift.max(0, length)
+            frame.size.height = length
         }
         self.setLength = Swift.max(0, length)
     }
