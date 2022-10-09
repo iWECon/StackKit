@@ -42,7 +42,7 @@ class HVStackDemoViewController: UIViewController {
         
         Spacer()
         
-        VStackView {
+        VStackView(distribution: .fillWidth(10)) {
             
             // view.stack.then (Inspired by Then [ https://github.com/devxoul/Then ])
             UILabel().stack.then { label in
@@ -51,11 +51,11 @@ class HVStackDemoViewController: UIViewController {
                 label.textColor = .red
             }
             
-            Spacer(length: 6)
+//            Spacer(length: 6)
             // Support Divider (Inspired by SwiftUI)
             Divider(color: UIColor.orange)
             
-            Spacer(length: 6)
+//            Spacer(length: 6)
             
             UILabel().stack.then { label in
                 label.text = "Version: 1"

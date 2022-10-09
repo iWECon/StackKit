@@ -7,7 +7,7 @@ open class VStackView: UIView {
     
     public required init(
         alignment: VStackAlignment = .center,
-        distribution: VStackDistribution = .autoSpacing,
+        distribution: VStackDistribution = .spacing(2),
         @_StackKitVStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
@@ -69,9 +69,13 @@ open class VStackView: UIView {
     }
     
     public var contentSize: CGSize {
-        effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+        let h = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
-        }.size
+        }.height
+        let w = effectiveSubviews.map({ $0.bounds }).reduce(CGRect.zero) { result, rect in
+            result.union(rect)
+        }.width
+        return CGSize(width: w, height: h)
     }
     
     open func hideIfNoEffectiveViews() {
@@ -84,11 +88,7 @@ open class VStackView: UIView {
         }
     }
     
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        tryResizeStackView()
-        
+    private func makeSubviewsAlignment() {
         switch alignment {
         case .left:
             effectiveSubviews.forEach { $0.frame.origin.x = 0 }
@@ -97,6 +97,14 @@ open class VStackView: UIView {
         case .right:
             effectiveSubviews.forEach { $0.frame.origin.x = frame.width - $0.frame.width }
         }
+    }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        tryResizeStackView()
+        
+        makeSubviewsAlignment()
         
         switch distribution {
         case .spacing(let spacing):
@@ -114,12 +122,12 @@ open class VStackView: UIView {
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
-        case .fillWidth:
+        case .fillWidth(let spacing):
             fillDivider()
             fillSpecifySpacer()
             fillSpacer()
             
-            let spacing = autoSpacing()
+            let spacing = spacing ?? autoSpacing()
             makeSpacing(spacing)
             fillWidth()
             
@@ -206,8 +214,18 @@ extension VStackView {
     }
     
     private func fillWidth() {
-        effectiveSubviews.forEach {
-            $0.frame.size.width = frame.width
+        if frame.width == 0 {
+            frame.size.width = contentSize.width // found subviews.map { $0.frame.width }.max()
+        }
+        for subview in effectiveSubviews {
+            let oldWidth = subview.frame.width
+            subview.frame.size.width = frame.width
+            
+            // fix #https://github.com/iWECon/StackKit/issues/21
+            guard alignment == .center else {
+                continue
+            }
+            subview.frame.origin.x -= (frame.width - oldWidth) / 2
         }
     }
     
@@ -298,9 +316,13 @@ extension VStackView {
         } else {
             switch distribution {
             case .spacing(let spacing):
-                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
-            case .autoSpacing, .fillWidth:
+            case .fillWidth(let spacing):
+                unspacerViewsSpacing = (spacing ?? autoSpacing()) * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
+                
+            case .autoSpacing:
                 unspacerViewsSpacing = autoSpacing() * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
             case .fill:

@@ -12,9 +12,9 @@ let contentWidth: CGFloat = UIScreen.main.bounds.width - 32
 
 class HVStackWrapperViewDemoViewController: UIViewController {
     
-    let content = VStackLayerWrapperView {
-        HStackLayerWrapperView() {
-            VStackLayerWrapperView(alignment: .left) {
+    let content = VStackView {
+        HStackView() {
+            VStackView(alignment: .left) {
                 UILabel().stack.then {
                     $0.text = "Good Morning."
                     $0.font = .systemFont(ofSize: 16, weight: .medium)
@@ -31,7 +31,7 @@ class HVStackWrapperViewDemoViewController: UIViewController {
             Spacer()
             
             // ICON
-            HStackLayerWrapperView(distribution: .spacing(10)) {
+            HStackView(distribution: .spacing(10)) {
                 UIView().stack.size(34).then {
                     $0.backgroundColor = .systemPink
                     $0.layer.cornerRadius = 8
@@ -48,13 +48,13 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         
         Spacer(length: 20)
         
-        HStackLayerWrapperView {
-            HStackLayerWrapperView(distribution: .spacing(6)) {
+        HStackView {
+            HStackView(distribution: .spacing(6)) {
                 UIView().stack.size(60).then {
                     $0.backgroundColor = .systemPink
                     $0.layer.cornerRadius = 8
                 }
-                VStackLayerWrapperView(alignment: .left) {
+                VStackView(alignment: .left) {
                     UILabel().stack.then {
                         $0.text = "Spending"
                         $0.font = .systemFont(ofSize: 18)
@@ -68,12 +68,12 @@ class HVStackWrapperViewDemoViewController: UIViewController {
                 }
             }
             Spacer()
-            HStackLayerWrapperView(distribution: .spacing(6)) {
+            HStackView(distribution: .spacing(6)) {
                 UIView().stack.size(60).then {
                     $0.backgroundColor = .systemPink
                     $0.layer.cornerRadius = 8
                 }
-                VStackLayerWrapperView(alignment: .left) {
+                VStackView(alignment: .left) {
                     UILabel().stack.then {
                         $0.text = "Income"
                         $0.font = .systemFont(ofSize: 18)
@@ -89,7 +89,7 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         }.stack.width(contentWidth).sizeToFit(.width)
         
         Spacer(length: 30)
-        HStackLayerWrapperView(alignment: .bottom) {
+        HStackView(alignment: .bottom) {
             UILabel().stack.then {
                 $0.text = "Transactions"
                 $0.font = .systemFont(ofSize: 24, weight: .bold)
@@ -104,15 +104,15 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         }.stack.width(contentWidth).sizeToFit(.width)
         
         Spacer(length: 20)
-        VStackLayerWrapperView(alignment: .left) {
+        VStackView(alignment: .left) {
             
-            HStackLayerWrapperView {
+            HStackView {
                 UIView().stack.size(40).then {
                     $0.backgroundColor = .systemPink
                     $0.layer.cornerRadius = 12
                 }
                 Spacer(length: 10)
-                VStackLayerWrapperView(alignment: .left) {
+                VStackView(alignment: .left) {
                     UILabel().stack.then {
                         $0.text = "Freelance Work"
                         $0.textColor = .black
@@ -138,6 +138,20 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        
+        let textLayer = CATextLayer()
+        textLayer.string = "This is CATextLayer in VStackLayerWrapperView2"
+        textLayer.fontSize = 12
+        textLayer.foregroundColor = UIColor.black.cgColor
+        textLayer.contentsScale = UIScreen.main.scale
+        
+        content.addContent {
+            VStackLayerContainerView {
+                Spacer(length: 20)
+                textLayer
+            }
+        }
         
         self.view.addSubview(content)
     }
