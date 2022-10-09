@@ -15,7 +15,7 @@ class WrapStackDemoViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
-        let vStack = VStackView(distribution: .fillWidth(10)) {
+        let vStack = VStackView(distribution: .fillWidth(spacing: 10)) {
             UILabel().stack.then {
                 $0.text = "StackKit"
                 $0.font = .systemFont(ofSize: 18, weight: .semibold)

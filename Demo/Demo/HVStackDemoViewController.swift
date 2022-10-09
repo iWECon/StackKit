@@ -42,7 +42,7 @@ class HVStackDemoViewController: UIViewController {
         
         Spacer()
         
-        VStackView(distribution: .fillWidth(10)) {
+        VStackView(distribution: .fillWidth(spacing: 10)) {
             
             // view.stack.then (Inspired by Then [ https://github.com/devxoul/Then ])
             UILabel().stack.then { label in

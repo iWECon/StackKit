@@ -17,7 +17,7 @@ public enum HStackDistribution {
     
     /// The height of subviews are equal. `The height of the VStack needs to be given.`
     /// set `nil` means autoSpacing
-    case fillHeight(_ spacing: CGFloat? = nil)
+    case fillHeight(spacing: CGFloat? = nil)
     
     /// The width and height of subviews are equal. `The size of the HStack needs to be given.`
     case fill
@@ -41,7 +41,7 @@ public enum VStackDistribution {
     
     /// The widths are all equal. `The width of the VStack needs to be given.`
     /// set `nil` means autoSpacing
-    case fillWidth(_ spacing: CGFloat? = nil)
+    case fillWidth(spacing: CGFloat? = nil)
     
     /// The widths and heights are all equal. `The size of the V Stack needs to be given.`
     case fill
