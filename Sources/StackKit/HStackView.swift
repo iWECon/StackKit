@@ -7,7 +7,7 @@ open class HStackView: UIView {
     
     public required init(
         alignment: HStackAlignment = .center,
-        distribution: HStackDistribution = .autoSpacing,
+        distribution: HStackDistribution = .spacing(2),
         @_StackKitHStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
@@ -69,9 +69,13 @@ open class HStackView: UIView {
     }
     
     public var contentSize: CGSize {
-        effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+        let h = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
-        }.size
+        }.width
+        let w = effectiveSubviews.map({ $0.bounds }).reduce(CGRect.zero) { result, rect in
+            result.union(rect)
+        }.height
+        return CGSize(width: h, height: w)
     }
     
     open func hideIfNoEffectiveViews() {
@@ -114,12 +118,12 @@ open class HStackView: UIView {
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
-        case .fillHeight:
+        case .fillHeight(let spacing):
             fillDivider()
             fillSpecifySpacer()
             fillSpacer()
             
-            let spacing = autoSpacing()
+            let spacing = spacing ?? autoSpacing()
             makeSpacing(spacing)
             fillHeight()
             
@@ -206,8 +210,18 @@ extension HStackView {
     }
     
     private func fillHeight() {
-        effectiveSubviews.forEach {
-            $0.frame.size.height = frame.height
+        if frame.height == 0 {
+            frame.size.height = contentSize.height
+        }
+        for subview in effectiveSubviews {
+            let oldHeight = subview.frame.height
+            subview.frame.size.height = frame.height
+            
+            // fix #https://github.com/iWECon/StackKit/issues/21
+            guard alignment == .center else {
+                continue
+            }
+            subview.frame.origin.y -= (frame.height - oldHeight) / 2
         }
     }
     
@@ -299,9 +313,13 @@ extension HStackView {
         } else {
             switch distribution {
             case .spacing(let spacing):
-                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
-            case .autoSpacing, .fillHeight:
+            case .fillHeight(let spacing):
+                unspacerViewsSpacing = (spacing ?? autoSpacing()) * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
+                
+            case .autoSpacing:
                 unspacerViewsSpacing = autoSpacing() * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
             case .fill:

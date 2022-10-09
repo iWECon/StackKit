@@ -5,6 +5,9 @@ import UIKit
 ///
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 ///
+/// There may be performance problems in heavy use. It is recommended to use `VStackView` / `HStackView` when there are many views.
+/// 大量使用可能会有性能问题, 视图较多时建议使用 `VStackView` / `HStackView`
+///
 open class HStackLayerWrapperView: _StackLayerWrapperView {
     
     public var hStackLayer: HStackLayer {
