@@ -12,7 +12,7 @@ let contentWidth: CGFloat = UIScreen.main.bounds.width - 32
 
 class HVStackWrapperViewDemoViewController: UIViewController {
     
-    let content = VStackView {
+    let content = VStackView(distribution: .fillWidth(spacing: 0), padding: UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)) {
         HStackView() {
             VStackView(alignment: .left) {
                 UILabel().stack.then {
@@ -44,7 +44,7 @@ class HVStackWrapperViewDemoViewController: UIViewController {
             }
             
             // wrapper in other view, need set width and sizeToFit
-        }.stack.width(contentWidth).sizeToFit(.width)
+        }
         
         Spacer(length: 20)
         
@@ -86,7 +86,7 @@ class HVStackWrapperViewDemoViewController: UIViewController {
                     }
                 }
             }
-        }.stack.width(contentWidth).sizeToFit(.width)
+        }
         
         Spacer(length: 30)
         HStackView(alignment: .bottom) {
@@ -101,11 +101,11 @@ class HVStackWrapperViewDemoViewController: UIViewController {
                 $0.font = .systemFont(ofSize: 18, weight: .medium)
                 $0.textColor = .blue
             }
-        }.stack.width(contentWidth).sizeToFit(.width)
+        }.stack.sizeToFit(.width)
         
         Spacer(length: 20)
-        VStackView(alignment: .left) {
-            
+        
+        VStackView(distribution: .fillWidth()) {
             HStackView {
                 UIView().stack.size(40).then {
                     $0.backgroundColor = .systemPink
@@ -130,7 +130,7 @@ class HVStackWrapperViewDemoViewController: UIViewController {
                     $0.textColor = .black
                     $0.font = .systemFont(ofSize: 18, weight: .medium)
                 }
-            }.stack.width(contentWidth).sizeToFit(.width)
+            }
         }
     }
 
@@ -141,7 +141,7 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         
         
         let textLayer = CATextLayer()
-        textLayer.string = "This is CATextLayer in VStackLayerWrapperView2"
+        textLayer.string = "This is CATextLayer in VStackLayerContainerView"
         textLayer.fontSize = 12
         textLayer.foregroundColor = UIColor.black.cgColor
         textLayer.contentsScale = UIScreen.main.scale
@@ -152,14 +152,14 @@ class HVStackWrapperViewDemoViewController: UIViewController {
                 textLayer
             }
         }
-        
+        content.sizeToFit()
         self.view.addSubview(content)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        content.pin.top(view.pin.safeArea).horizontally(16).sizeToFit()
+        content.pin.top(view.pin.safeArea).horizontally().sizeToFit(.width)
     }
 
     /*

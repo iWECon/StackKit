@@ -144,7 +144,7 @@ extension VStackLayer {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return Swift.max(0, (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(max(1, number)))
+        return Swift.max(0, (frame.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number)))
     }
     
     private func viewsHeight() -> CGFloat {
@@ -176,7 +176,7 @@ extension VStackLayer {
     ///
     /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
-        let maxH = frame.height - spacerSpecifyLength() - dividerSpecifyLength()
+        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - dividerSpecifyLength()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -215,7 +215,7 @@ extension VStackLayer {
 extension VStackLayer {
     
     // 取出固定 length 的 spacer
-    private func spacerSpecifyLength() -> CGFloat {
+    private func lengthOfAllFixedLengthSpacer() -> CGFloat {
         spacerLayers()
             .map({ $0.setLength })
             .reduce(0, +)
@@ -268,7 +268,7 @@ extension VStackLayer {
         }
         
         let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
-        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.spacerSpecifyLength())
+        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.lengthOfAllFixedLengthSpacer())
         let spacerWidth = spacersHeight / CGFloat(self.dynamicSpacerLayers().count)
         
         let spacerViews = self.spacerLayers()

@@ -1,19 +1,22 @@
 import UIKit
 
-open class VStackView: UIView {
+open class VStackView: UIView, StackView {
     
     public var alignment: VStackAlignment = .center
     public var distribution: VStackDistribution = .autoSpacing
+    public var padding: UIEdgeInsets = .zero
     
     public required init(
         alignment: VStackAlignment = .center,
         distribution: VStackDistribution = .spacing(2),
+        padding: UIEdgeInsets = .zero,
         @_StackKitVStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         
         self.alignment = alignment
         self.distribution = distribution
+        self.padding = padding
         
         for v in content() {
             addSubview(v)
@@ -75,7 +78,7 @@ open class VStackView: UIView {
         let w = effectiveSubviews.map({ $0.bounds }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.width
-        return CGSize(width: w, height: h)
+        return CGSize(width: w + paddingHorizontally, height: h + paddingBottom)
     }
     
     open func hideIfNoEffectiveViews() {
@@ -91,11 +94,11 @@ open class VStackView: UIView {
     private func makeSubviewsAlignment() {
         switch alignment {
         case .left:
-            effectiveSubviews.forEach { $0.frame.origin.x = 0 }
+            effectiveSubviews.forEach { $0.frame.origin.x = _stackContentRect.minX }
         case .center:
-            effectiveSubviews.forEach { $0.center.x = frame.width / 2 }
+            effectiveSubviews.forEach { $0.center.x = _stackContentRect.midX }
         case .right:
-            effectiveSubviews.forEach { $0.frame.origin.x = frame.width - $0.frame.width }
+            effectiveSubviews.forEach { $0.frame.origin.x = _stackContentRect.maxX - $0.frame.width }
         }
     }
     
@@ -159,26 +162,6 @@ open class VStackView: UIView {
 
 extension VStackView {
     
-    private func spacerViews() -> [SpacerView] {
-        effectiveSubviews.compactMap({ $0 as? SpacerView })
-    }
-    private func dynamicSpacerViews() -> [SpacerView] {
-        effectiveSubviews.compactMap({ $0 as? SpacerView }).filter({ $0.length == .greatestFiniteMagnitude })
-    }
-    private func dividerViews() -> [DividerView] {
-        effectiveSubviews.compactMap({ $0 as? DividerView })
-    }
-    
-    private func viewsWithoutSpacer() -> [UIView] {
-        effectiveSubviews.filter({ ($0 as? SpacerView) == nil })
-    }
-    private func viewsWithoutSpacerAndDivider() -> [UIView] {
-        effectiveSubviews.filter({ ($0 as? SpacerView) == nil && ($0 as? DividerView) == nil })
-    }
-}
-
-extension VStackView {
-    
     /// 自动间距
     ///
     /// Z = 在两个 view 之间的 spacer 的数量 ( spacer 的设计是忽略 spacing 的 )
@@ -189,9 +172,9 @@ extension VStackView {
     ///
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
-        let spacersCount = spacerViews().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        let spacersCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return (frame.height - viewsHeight() - spacerSpecifyLength()) / CGFloat(max(1, number))
+        return (frame.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number))
     }
     
     private func viewsHeight() -> CGFloat {
@@ -201,7 +184,7 @@ extension VStackView {
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, subview) in effectiveSubviews.enumerated() {
             if index == 0 {
-                subview.frame.origin.y = 0
+                subview.frame.origin.y = paddingTop
             } else {
                 let previousView = effectiveSubviews[index - 1]
                 if (previousView as? SpacerView) != nil || (subview as? SpacerView) != nil { // spacer and view no spacing
@@ -219,20 +202,19 @@ extension VStackView {
         }
         for subview in effectiveSubviews {
             let oldWidth = subview.frame.width
-            subview.frame.size.width = frame.width
+            subview.frame.size.width = _stackContentWidth
             
             // fix #https://github.com/iWECon/StackKit/issues/21
             guard alignment == .center else {
                 continue
             }
-            subview.frame.origin.x -= (frame.width - oldWidth) / 2
+            subview.frame.origin.x -= (_stackContentWidth - oldWidth) / 2
         }
     }
     
-    ///
     /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
-        let maxH = frame.height - spacerSpecifyLength() - dividerSpecifyLength()
+        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - dividerSpecifyLength()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -271,27 +253,6 @@ extension VStackView {
 // MARK: Spacer
 extension VStackView {
     
-    // 取出固定 length 的 spacer
-    private func spacerSpecifyLength() -> CGFloat {
-        spacerViews()
-            .map({ $0.setLength })
-            .reduce(0, +)
-    }
-    
-    private func isSpacerBetweenViews(_ spacer: SpacerView) -> Bool {
-        guard let index = effectiveSubviews.firstIndex(of: spacer) else {
-            return false
-        }
-        
-        guard effectiveSubviews.count >= 3 else {
-            return false
-        }
-        
-        let start: Int = 1
-        let end: Int = effectiveSubviews.count - 2
-        return (start ... end).contains(index)
-    }
-    
     /// 填充 spacer 最小值
     private func fillSpecifySpacer() {
         let spacers = effectiveSubviews.compactMap({ $0 as? SpacerView })
@@ -305,7 +266,7 @@ extension VStackView {
         guard unspacerViews.count != effectiveSubviews.count else { return }
         
         // 在 view 与 view 之间的 spacer view 数量: 两个 view 夹一个 spacer view
-        let betweenInViewsCount = spacerViews().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        let betweenInViewsCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
         // 非 spacer view 的总高度
         let unspacerViewsHeight = viewsHeight()
         // 排除 spacer view 后的间距
@@ -330,10 +291,9 @@ extension VStackView {
             }
         }
         
-        
         // 非 spacerView 的所有宽度
         let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
-        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.spacerSpecifyLength())
+        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.lengthOfAllFixedLengthSpacer())
         let spacerHeight = spacersHeight / CGFloat(self.dynamicSpacerViews().count)
         
         let spacerViews = self.spacerViews()

@@ -57,6 +57,10 @@ open class VStackLayerContainerView: UIView {
         vStackLayer.sizeThatFits(size)
     }
     
+    open override func sizeToFit() {
+        vStackLayer.sizeToFit()
+    }
+    
     open func addContent(@_StackKitVStackLayerContentResultBuilder _ content: () -> [CALayer]) {
         vStackLayer.addContent(content)
     }
