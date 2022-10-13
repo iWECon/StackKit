@@ -24,15 +24,13 @@ class HVStackDemoViewController: UIViewController {
         // Support Spacer (Inspired by SwiftUI)
         Spacer()
         
-        VStackView {
+        VStackView(distribution: .spacing(4)) {
             UILabel().stack.then { label in
                 label.font = .systemFont(ofSize: 14, weight: .semibold)
                 label.textColor = .systemGreen
                 label.text = "H/VStack in UIKit"
             }
-            Spacer(length: 4)
             Divider(color: UIColor.blue)
-            Spacer(length: 12)
             UILabel().stack.then { label in
                 label.font = .systemFont(ofSize: 12, weight: .regular)
                 label.textColor = .gray
@@ -42,7 +40,7 @@ class HVStackDemoViewController: UIViewController {
         
         Spacer()
         
-        VStackView(distribution: .fillWidth(spacing: 10)) {
+        VStackView(distribution: .fillWidth(spacing: 4)) {
             
             // view.stack.then (Inspired by Then [ https://github.com/devxoul/Then ])
             UILabel().stack.then { label in
@@ -91,18 +89,14 @@ class HVStackDemoViewController: UIViewController {
             }
         }
         
-        HStackView(alignment: .top, distribution: .spacing(14)) {
-            Spacer(length: 12)
-            
+        HStackView(alignment: .top, distribution: .spacing(14), padding: UIEdgeInsets(top: 2, left: 12, bottom: 2, right: 6)) {
             VStackView {
-                Spacer(length: 6)
                 UIView().stack.size(6).then {
                     $0.backgroundColor = .systemBlue
                     $0.layer.cornerRadius = 3
                     $0.clipsToBounds = true
                 }
             }
-            
             Spacer(length: 4)
             UILabel().stack.then {
                 $0.textColor = .darkText
