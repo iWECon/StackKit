@@ -33,12 +33,14 @@ open class VStackLayerContainerView: UIView {
     
     public required init(
         alignment: VStackAlignment = .center,
-        distribution: VStackDistribution = .autoSpacing,
+        distribution: VStackDistribution = .spacing(2),
+        padding: UIEdgeInsets = .zero,
         @_StackKitVStackLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init(frame: .zero)
         vStackLayer.alignment = alignment
         vStackLayer.distribution = distribution
+        vStackLayer.padding = padding
         
         for v in content() {
             vStackLayer.addSublayer(v)

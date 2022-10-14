@@ -67,10 +67,6 @@ open class HStackView: UIView, StackView {
         }
     }
     
-    open var effectiveSubviews: [UIView] {
-        subviews.filter { $0._isEffectiveView }
-    }
-    
     public var contentSize: CGSize {
         let h = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
@@ -91,11 +87,7 @@ open class HStackView: UIView, StackView {
         }
     }
     
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        tryResizeStackView()
-        
+    private func makeSubviewsAlignment() {
         switch alignment {
         case .top:
             effectiveSubviews.forEach { $0.frame.origin.y = _stackContentRect.minY }
@@ -104,6 +96,14 @@ open class HStackView: UIView, StackView {
         case .bottom:
             effectiveSubviews.forEach { $0.frame.origin.y = _stackContentRect.maxY - $0.frame.height }
         }
+    }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        tryResizeStackView()
+        
+        makeSubviewsAlignment()
         
         switch distribution {
         case .spacing(let spacing):
@@ -180,7 +180,7 @@ extension HStackView {
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, subview) in effectiveSubviews.enumerated() {
             if index == 0 {
-                subview.frame.origin.x = _stackContentRect.minX
+                subview.frame.origin.x = paddingLeft
             } else {
                 let previousView = effectiveSubviews[index - 1]
                 if (previousView as? SpacerView) != nil || (subview as? SpacerView) != nil { // spacer and view no spacing
@@ -197,19 +197,18 @@ extension HStackView {
             frame.size.height = contentSize.height
         }
         for subview in effectiveSubviews {
-            let oldHeight = subview.frame.height
             subview.frame.size.height = _stackContentWidth
             
             // fix #https://github.com/iWECon/StackKit/issues/21
             guard alignment == .center else {
                 continue
             }
-            subview.frame.origin.y -= (_stackContentWidth - oldHeight) / 2
+            subview.center.y = _stackContentRect.midY
         }
     }
     
     private func fillWidth() {
-        let maxW = frame.width - lengthOfAllFixedLengthSpacer() - dividerSpecifyLength()
+        let maxW = frame.width - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivider()
         var w = (maxW) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -222,12 +221,6 @@ extension HStackView {
 
 // MARK: Divider
 extension HStackView {
-    
-    private func dividerSpecifyLength() -> CGFloat {
-        dividerViews()
-            .map({ $0.thickness })
-            .reduce(0, +)
-    }
     
     private func fillDivider() {
         let maxHeight = effectiveSubviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.height }).max() ?? frame.height
@@ -291,7 +284,7 @@ extension HStackView {
         
         // 非 spacerView 的所有宽度
         let unspacerViewsMaxWidth = unspacerViewsWidth + unspacerViewsSpacing
-        let spacersWidth = (frame.width - unspacerViewsMaxWidth - self.lengthOfAllFixedLengthSpacer())
+        let spacersWidth = (_stackContentWidth - unspacerViewsMaxWidth - self.lengthOfAllFixedLengthSpacer())
         let spacerWidth = spacersWidth / CGFloat(self.dynamicSpacerViews().count)
         
         let spacerViews = self.spacerViews()

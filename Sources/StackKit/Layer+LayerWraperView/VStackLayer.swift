@@ -1,9 +1,10 @@
 import UIKit
 
-open class VStackLayer: CALayer, _StackLayerProvider {
+open class VStackLayer: CALayer, StackLayer {
     
     public var alignment: VStackAlignment = .center
     public var distribution: VStackDistribution = .autoSpacing
+    public var padding: UIEdgeInsets = .zero
     
     public required override init() {
         super.init()
@@ -19,13 +20,15 @@ open class VStackLayer: CALayer, _StackLayerProvider {
     
     public required init(
         alignment: VStackAlignment = .center,
-        distribution: VStackDistribution = .autoSpacing,
+        distribution: VStackDistribution = .spacing(2),
+        padding: UIEdgeInsets = .zero,
         @_StackKitVStackLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init()
         
         self.alignment = alignment
         self.distribution = distribution
+        self.padding = padding
         
         for l in content() {
             addSublayer(l)
@@ -46,9 +49,13 @@ open class VStackLayer: CALayer, _StackLayerProvider {
     }
     
     public var contentSize: CGSize {
-        effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
-            result.union(rect)
-        }.size
+        let h = effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { partialResult, rect in
+            partialResult.union(rect)
+        }.height
+        let w = effectiveSublayers.map({ $0.bounds }).reduce(CGRect.zero) { partialResult, rect in
+            partialResult.union(rect)
+        }.width
+        return CGSize(width: w + paddingHorizontally, height: h + paddingBottom)
     }
     
     open override func preferredFrameSize() -> CGSize {
@@ -64,25 +71,23 @@ open class VStackLayer: CALayer, _StackLayerProvider {
         }
     }
     
+    private func makeSublayersAlignment() {
+        switch alignment {
+        case .left:
+            effectiveSublayers.forEach { $0.frame.origin.x = _stackContentRect.minX }
+        case .center:
+            effectiveSublayers.forEach { $0.position.x = _stackContentRect.midX }
+        case .right:
+            effectiveSublayers.forEach { $0.frame.origin.x = _stackContentRect.maxX - $0.frame.width }
+        }
+    }
+    
     open override func layoutSublayers() {
         super.layoutSublayers()
         
         refreshSublayers()
         
-        switch alignment {
-        case .left:
-            effectiveSublayers.forEach {
-                $0.frame.origin.x = 0
-            }
-        case .center:
-            effectiveSublayers.forEach {
-                $0.position.x = frame.width / 2
-            }
-        case .right:
-            effectiveSublayers.forEach {
-                $0.frame.origin.x = frame.width - $0.frame.width
-            }
-        }
+        makeSublayersAlignment()
         
         switch distribution {
         case .spacing(let spacing):
@@ -100,12 +105,12 @@ open class VStackLayer: CALayer, _StackLayerProvider {
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
-        case .fillWidth:
+        case .fillWidth(let spacing):
             fillDivider()
             fillSpecifySpacer()
             fillSpacer()
             
-            let spacing = autoSpacing()
+            let spacing = spacing ?? autoSpacing()
             makeSpacing(spacing)
             fillWidth()
             
@@ -120,16 +125,10 @@ open class VStackLayer: CALayer, _StackLayerProvider {
     }
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
-        layoutSublayers()
+        setNeedsLayout()
+        layoutIfNeeded()
         
-        var _size = size
-        if size.width == CGFloat.greatestFiniteMagnitude || size.width == 0 {
-            _size.width = contentSize.width
-        }
-        if size.height == CGFloat.greatestFiniteMagnitude || size.height == 0 {
-            _size.height = contentSize.height
-        }
-        return _size
+        return contentSize
     }
     
     public func sizeToFit() {
@@ -154,7 +153,7 @@ extension VStackLayer {
     private func makeSpacing(_ spacing: CGFloat) {
         for (index, sublayer) in effectiveSublayers.enumerated() {
             if index == 0 {
-                sublayer.frame.origin.y = 0
+                sublayer.frame.origin.y = paddingTop
             } else {
                 let previousLayer = effectiveSublayers[index - 1]
                 if (previousLayer as? SpacerLayer) != nil || (sublayer as? SpacerLayer) != nil {
@@ -168,15 +167,23 @@ extension VStackLayer {
     }
     
     private func fillWidth() {
-        effectiveSublayers.forEach {
-            $0.frame.size.width = frame.width
+        if frame.width == 0 {
+            frame.size.width = _stackContentRect.width
+        }
+        for sublayer in effectiveSublayers {
+            sublayer.frame.size.width = _stackContentWidth
+
+            guard alignment == .center else {
+                continue
+            }
+            sublayer.position.x = _stackContentRect.midX
         }
     }
     
     ///
     /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
-        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - dividerSpecifyLength()
+        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivier()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -188,12 +195,6 @@ extension VStackLayer {
 }
 
 extension VStackLayer {
-    
-    private func dividerSpecifyLength() -> CGFloat {
-        dividerLayers()
-            .map({ $0.thickness })
-            .reduce(0, +)
-    }
     
     private func fillDivider() {
         let maxWidth = effectiveSublayers.filter({ ($0 as? DividerLayer) == nil }).map({ $0.frame.size.width }).max() ?? frame.width
@@ -213,13 +214,6 @@ extension VStackLayer {
 
 // MARK: Spacer
 extension VStackLayer {
-    
-    // 取出固定 length 的 spacer
-    private func lengthOfAllFixedLengthSpacer() -> CGFloat {
-        spacerLayers()
-            .map({ $0.setLength })
-            .reduce(0, +)
-    }
     
     private func isSpacerBetweenViews(_ spacer: SpacerLayer) -> Bool {
         guard let index = effectiveSublayers.firstIndex(of: spacer) else {
@@ -259,7 +253,10 @@ extension VStackLayer {
             case .spacing(let spacing):
                 unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
                 
-            case .autoSpacing, .fillWidth:
+            case .fillWidth(let spacing):
+                unspacerViewsSpacing = (spacing ?? autoSpacing()) * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
+                
+            case .autoSpacing:
                 unspacerViewsSpacing = autoSpacing() * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
             case .fill:

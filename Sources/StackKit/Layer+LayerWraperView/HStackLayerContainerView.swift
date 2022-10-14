@@ -31,14 +31,25 @@ open class HStackLayerContainerView: UIView {
         }
     }
     
+    open var padding: UIEdgeInsets {
+        get {
+            hStackLayer.padding
+        }
+        set {
+            hStackLayer.padding = newValue
+        }
+    }
+    
     public required init(
         alignment: HStackAlignment = .center,
-        distribution: HStackDistribution = .autoSpacing,
+        distribution: HStackDistribution = .spacing(2),
+        padding: UIEdgeInsets = .zero,
         @_StackKitHStackLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
         super.init(frame: .zero)
         hStackLayer.alignment = alignment
         hStackLayer.distribution = distribution
+        hStackLayer.padding = padding
         
         for v in content() {
             hStackLayer.addSublayer(v)

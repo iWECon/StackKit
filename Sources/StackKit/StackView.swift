@@ -4,6 +4,14 @@ protocol StackView {
     var effectiveSubviews: [UIView] { get }
     
     var padding: UIEdgeInsets { get }
+    
+    var contentSize: CGSize { get }
+}
+
+extension StackView where Self: UIView {
+    var effectiveSubviews: [UIView] {
+        subviews.filter { $0._isEffectiveView }
+    }
 }
 
 // MARK: Padding
@@ -38,7 +46,7 @@ extension StackView where Self: UIView {
     }
     
     var _stackContentHeight: CGFloat {
-        frame.height - (padding.top - padding.bottom)
+        frame.height - (padding.top + padding.bottom)
     }
     
     var _stackContentRect: CGRect {
@@ -90,5 +98,9 @@ extension StackView {
         let start: Int = 1
         let end: Int = effectiveSubviews.count - 2
         return (start ... end).contains(index)
+    }
+    
+    func lengthOfAllFixedLengthDivider() -> CGFloat {
+        dividerViews().map { $0.thickness }.reduce(0, +)
     }
 }

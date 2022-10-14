@@ -140,16 +140,28 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         
-        let textLayer = CATextLayer()
-        textLayer.string = "This is CATextLayer in VStackLayerContainerView"
-        textLayer.fontSize = 12
-        textLayer.foregroundColor = UIColor.black.cgColor
-        textLayer.contentsScale = UIScreen.main.scale
+        func makeTextLayer(title: String) -> CATextLayer {
+            let textLayer = CATextLayer()
+            textLayer.string = title
+            textLayer.fontSize = 14
+            textLayer.foregroundColor = UIColor.black.cgColor
+            textLayer.contentsScale = UIScreen.main.scale
+            return textLayer
+        }
         
         content.addContent {
-            VStackLayerContainerView {
+            VStackLayerContainerView(distribution: .fillWidth(spacing: 0), padding: UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14)) {
                 Spacer(length: 20)
-                textLayer
+                makeTextLayer(title: "This is CATextLayer in VStackLayerContainerView")
+                makeTextLayer(title: "1This is CATextLayer in VStackLayerContainerView1")
+            }
+            
+            HStackLayerContainerView(padding: UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14)) {
+                Spacer(length: 20)
+                
+                makeTextLayer(title: "Nickname")
+                Spacer()
+                makeTextLayer(title: "UserId")
             }
         }
         content.sizeToFit()
