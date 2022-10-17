@@ -79,13 +79,6 @@ extension _StackKitLayerContentResultBuilder {
     public static func buildLimitedAvailability(_ component: [CALayer]) -> [CALayer] {
         component
     }
-    
-    public static func buildExpression(_ expression: VStackLayerContainerView) -> [CALayer] {
-        [expression.layer]
-    }
-    public static func buildExpression(_ expression: HStackLayerContainerView) -> [CALayer] {
-        [expression.layer]
-    }
 }
 
 @resultBuilder public struct _StackKitVStackLayerContentResultBuilder: _StackKitLayerContentResultBuilder { }

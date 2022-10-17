@@ -90,7 +90,7 @@ class HVStackDemoViewController: UIViewController {
         }
         
         HStackView(alignment: .top, distribution: .spacing(14), padding: UIEdgeInsets(top: 2, left: 12, bottom: 2, right: 6)) {
-            VStackView {
+            VStackView(padding: .init(top: 8, left: 0, bottom: 0, right: 0)) {
                 UIView().stack.size(6).then {
                     $0.backgroundColor = .systemBlue
                     $0.layer.cornerRadius = 3

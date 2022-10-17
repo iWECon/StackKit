@@ -138,33 +138,6 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        
-        func makeTextLayer(title: String) -> CATextLayer {
-            let textLayer = CATextLayer()
-            textLayer.string = title
-            textLayer.fontSize = 14
-            textLayer.foregroundColor = UIColor.black.cgColor
-            textLayer.contentsScale = UIScreen.main.scale
-            return textLayer
-        }
-        
-        content.addContent {
-            VStackLayerContainerView(distribution: .fillWidth(spacing: 0), padding: UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14)) {
-                Spacer(length: 20)
-                makeTextLayer(title: "This is CATextLayer in VStackLayerContainerView")
-                makeTextLayer(title: "1This is CATextLayer in VStackLayerContainerView1")
-            }
-            
-            HStackLayerContainerView(padding: UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14)) {
-                Spacer(length: 20)
-                
-                makeTextLayer(title: "Nickname")
-                Spacer()
-                makeTextLayer(title: "UserId")
-            }
-        }
-        content.sizeToFit()
         self.view.addSubview(content)
     }
     
@@ -173,15 +146,5 @@ class HVStackWrapperViewDemoViewController: UIViewController {
         
         content.pin.top(view.pin.safeArea).horizontally().sizeToFit(.width)
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }
