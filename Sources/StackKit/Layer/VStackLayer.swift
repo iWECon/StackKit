@@ -141,7 +141,7 @@ extension VStackLayer {
     
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
-        let spacersCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        let spacersCount = spacerLayers().map({ isSpacerBetweenInTwoLayers(spacerLayer: $0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
         return Swift.max(0, (frame.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number)))
     }
@@ -215,20 +215,6 @@ extension VStackLayer {
 // MARK: Spacer
 extension VStackLayer {
     
-    private func isSpacerBetweenViews(_ spacer: SpacerLayer) -> Bool {
-        guard let index = effectiveSublayers.firstIndex(of: spacer) else {
-            return false
-        }
-        
-        guard effectiveSublayers.count >= 3 else {
-            return false
-        }
-        
-        let start: Int = 1
-        let end: Int = effectiveSublayers.count - 2
-        return (start ... end).contains(index)
-    }
-    
     private func fillSpecifySpacer() {
         let spacers = effectiveSublayers.compactMap({ $0 as? SpacerLayer })
         for spacer in spacers {
@@ -241,7 +227,7 @@ extension VStackLayer {
         let unspacerViews = viewsWithoutSpacer()
         guard unspacerViews.count != effectiveSublayers.count else { return }
         
-        let betweenInViewsCount = spacerLayers().map({ isSpacerBetweenViews($0) }).filter({ $0 }).count
+        let betweenInViewsCount = spacerLayers().map({ isSpacerBetweenInTwoLayers(spacerLayer: $0) }).filter({ $0 }).count
         let unspacerViewsHeight = viewsHeight()
         // 排除 spacer view 后的间距
         let unspacerViewsSpacing: CGFloat

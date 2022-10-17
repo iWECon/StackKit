@@ -75,4 +75,19 @@ extension StackLayer where Self: CALayer {
     func lengthOfAllFixedLengthDivier() -> CGFloat {
         dividerLayers().map { $0.thickness }.reduce(0, +)
     }
+    
+    func isSpacerBetweenInTwoLayers(spacerLayer: SpacerLayer) -> Bool {
+        guard let index = effectiveSublayers.firstIndex(of: spacerLayer) else {
+            return false
+        }
+        
+        guard effectiveSublayers.count >= 3 else {
+            return false
+        }
+        
+        let start: Int = 1
+        let end: Int = effectiveSublayers.count - 2
+        return (start ... end).contains(index)
+    }
+    
 }
