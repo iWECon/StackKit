@@ -67,10 +67,6 @@ open class VStackView: UIView, StackView {
         }
     }
     
-    open var effectiveSubviews: [UIView] {
-        subviews.filter { $0._isEffectiveView }
-    }
-    
     public var contentSize: CGSize {
         let h = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
@@ -162,14 +158,6 @@ open class VStackView: UIView, StackView {
 
 extension VStackView {
     
-    /// 自动间距
-    ///
-    /// Z = 在两个 view 之间的 spacer 的数量 ( spacer 的设计是忽略 spacing 的 )
-    /// A = 排除所有 spacer
-    /// B = frame.height - A.heights
-    /// C = B / (A.count - 1 - Z)
-    /// C 即是最终结果
-    ///
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
@@ -201,20 +189,19 @@ extension VStackView {
             frame.size.width = contentSize.width // found subviews.map { $0.frame.width }.max()
         }
         for subview in effectiveSubviews {
-            let oldWidth = subview.frame.width
             subview.frame.size.width = _stackContentWidth
             
             // fix #https://github.com/iWECon/StackKit/issues/21
             guard alignment == .center else {
                 continue
             }
-            subview.frame.origin.x -= (_stackContentWidth - oldWidth) / 2
+            subview.center.x = _stackContentRect.midX
         }
     }
     
     /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
-        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - dividerSpecifyLength()
+        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivider()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -227,12 +214,6 @@ extension VStackView {
 
 // MARK: Divider
 extension VStackView {
-    
-    private func dividerSpecifyLength() -> CGFloat {
-        dividerViews()
-            .map({ $0.thickness })
-            .reduce(0, +)
-    }
     
     private func fillDivider() {
         let maxWidth = effectiveSubviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.width }).max() ?? frame.width

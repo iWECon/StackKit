@@ -10,7 +10,6 @@
 		080677C628BE7D8B00000E16 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080677C528BE7D8B00000E16 /* ViewController.swift */; };
 		080677C828BE7DA400000E16 /* WrapStackDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080677C728BE7DA400000E16 /* WrapStackDemoViewController.swift */; };
 		08A24B8428E49A9600CDD7E2 /* LookinServer in Frameworks */ = {isa = PBXBuildFile; productRef = 08A24B8328E49A9600CDD7E2 /* LookinServer */; };
-		08A24B8628E49C7A00CDD7E2 /* HVStackWrapperViewDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A24B8528E49C7A00CDD7E2 /* HVStackWrapperViewDemoViewController.swift */; };
 		08E16CD9289ABA1C0019D7CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E16CD8289ABA1C0019D7CB /* AppDelegate.swift */; };
 		08E16CDB289ABA1C0019D7CB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E16CDA289ABA1C0019D7CB /* SceneDelegate.swift */; };
 		08E16CDD289ABA1C0019D7CB /* HVStackDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E16CDC289ABA1C0019D7CB /* HVStackDemoViewController.swift */; };
@@ -24,7 +23,6 @@
 /* Begin PBXFileReference section */
 		080677C528BE7D8B00000E16 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		080677C728BE7DA400000E16 /* WrapStackDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapStackDemoViewController.swift; sourceTree = "<group>"; };
-		08A24B8528E49C7A00CDD7E2 /* HVStackWrapperViewDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HVStackWrapperViewDemoViewController.swift; sourceTree = "<group>"; };
 		08E16CD5289ABA1C0019D7CB /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E16CD8289ABA1C0019D7CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08E16CDA289ABA1C0019D7CB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -75,7 +73,6 @@
 				08E16CDA289ABA1C0019D7CB /* SceneDelegate.swift */,
 				080677C528BE7D8B00000E16 /* ViewController.swift */,
 				08E16CDC289ABA1C0019D7CB /* HVStackDemoViewController.swift */,
-				08A24B8528E49C7A00CDD7E2 /* HVStackWrapperViewDemoViewController.swift */,
 				080677C728BE7DA400000E16 /* WrapStackDemoViewController.swift */,
 				08E16CDE289ABA1C0019D7CB /* Main.storyboard */,
 				08E16CE1289ABA1D0019D7CB /* Assets.xcassets */,
@@ -183,7 +180,6 @@
 				080677C628BE7D8B00000E16 /* ViewController.swift in Sources */,
 				08E16CDD289ABA1C0019D7CB /* HVStackDemoViewController.swift in Sources */,
 				080677C828BE7DA400000E16 /* WrapStackDemoViewController.swift in Sources */,
-				08A24B8628E49C7A00CDD7E2 /* HVStackWrapperViewDemoViewController.swift in Sources */,
 				08E16CD9289ABA1C0019D7CB /* AppDelegate.swift in Sources */,
 				08E16CDB289ABA1C0019D7CB /* SceneDelegate.swift in Sources */,
 			);

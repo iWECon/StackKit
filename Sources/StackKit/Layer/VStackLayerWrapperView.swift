@@ -1,45 +1,32 @@
 import UIKit
 
 ///
-/// All subviews(`UIView`) will be converted to `CALayer` to display
-///
+/// All subviews(`UIView`) will be converted to `CALayer` to display.
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 ///
 /// There may be performance problems in heavy use. It is recommended to use `VStackView` / `HStackView` when there are many views.
-/// 大量使用可能会有性能问题, 视图较多时建议使用 `VStackView` / `HStackView`
+/// 大量使用可能会有性能问题, 视图较多时建议直接使用 `VStackView` / `HStackView` 或使用 `H/VStackLayer` 替代.
 ///
 open class VStackLayerWrapperView: _StackLayerWrapperView {
+    
+    open override class var layerClass: AnyClass {
+        VStackLayer.self
+    }
     
     public var vStackLayer: VStackLayer {
         self.layer as! VStackLayer
     }
     
-    open var alignment: VStackAlignment {
-        get {
-            vStackLayer.alignment
-        }
-        set {
-            vStackLayer.alignment = newValue
-        }
-    }
-    
-    open var distribution: VStackDistribution {
-        get {
-            vStackLayer.distribution
-        }
-        set {
-            vStackLayer.distribution = newValue
-        }
-    }
-    
     public required init(
         alignment: VStackAlignment = .center,
-        distribution: VStackDistribution = .autoSpacing,
+        distribution: VStackDistribution = .spacing(2),
+        padding: UIEdgeInsets = .zero,
         @_StackKitVStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         vStackLayer.alignment = alignment
         vStackLayer.distribution = distribution
+        vStackLayer.padding = padding
         
         for v in content() {
             addSubview(v)
@@ -74,10 +61,6 @@ open class VStackLayerWrapperView: _StackLayerWrapperView {
         layer.addSublayer(dividerLayer)
         
         return true
-    }
-    
-    open override class var layerClass: AnyClass {
-        VStackLayer.self
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {

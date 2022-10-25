@@ -1,45 +1,32 @@
 import UIKit
 
 ///
-/// All subviews(`UIView`) will be converted to `CALayer` to display
-///
+/// All subviews(`UIView`) will be converted to `CALayer` to display.
 /// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 ///
 /// There may be performance problems in heavy use. It is recommended to use `VStackView` / `HStackView` when there are many views.
-/// 大量使用可能会有性能问题, 视图较多时建议使用 `VStackView` / `HStackView`
+/// 大量使用可能会有性能问题, 视图较多时建议直接使用 `VStackView` / `HStackView` 或使用 `H/VStackLayer` 替代.
 ///
 open class HStackLayerWrapperView: _StackLayerWrapperView {
+    
+    open override class var layerClass: AnyClass {
+        HStackLayer.self
+    }
     
     public var hStackLayer: HStackLayer {
         self.layer as! HStackLayer
     }
     
-    open var alignment: HStackAlignment {
-        get {
-            hStackLayer.alignment
-        }
-        set {
-            hStackLayer.alignment = newValue
-        }
-    }
-    
-    open var distribution: HStackDistribution {
-        get {
-            hStackLayer.distribution
-        }
-        set {
-            hStackLayer.distribution = newValue
-        }
-    }
-    
     public required init(
         alignment: HStackAlignment = .center,
         distribution: HStackDistribution = .autoSpacing,
+        padding: UIEdgeInsets = .zero,
         @_StackKitHStackContentResultBuilder content: () -> [UIView] = { [] }
     ) {
         super.init(frame: .zero)
         hStackLayer.alignment = alignment
         hStackLayer.distribution = distribution
+        hStackLayer.padding = padding
         
         for v in content() {
             addSubview(v)
@@ -61,10 +48,6 @@ open class HStackLayerWrapperView: _StackLayerWrapperView {
         for v in content() {
             addSubview(v)
         }
-    }
-    
-    open override class var layerClass: AnyClass {
-        HStackLayer.self
     }
     
     open override func convertDividerView(_ subview: UIView) -> Bool {

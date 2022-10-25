@@ -18,26 +18,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="M84-Lf-Gfo">
-                                <rect key="frame" x="87.5" y="375.5" width="239" height="145.5"/>
+                                <rect key="frame" x="135" y="403" width="144" height="90"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="06f-Ws-ezl">
-                                        <rect key="frame" x="0.0" y="0.0" width="239" height="34.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="144" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="H/VStackView"/>
                                         <connections>
                                             <segue destination="hGA-TO-DpM" kind="show" id="CVz-1t-QBY"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYP-HX-gHv">
-                                        <rect key="frame" x="0.0" y="55.5" width="239" height="34.5"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" title="H/VStackLayerWrapperView"/>
-                                        <connections>
-                                            <segue destination="5WQ-Nd-2jr" kind="show" id="Knm-qG-ruH"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dpb-UY-wFq">
-                                        <rect key="frame" x="0.0" y="111" width="239" height="34.5"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="144" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="WrapStackView"/>
                                         <connections>
@@ -109,22 +101,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1JQ-CP-Uo0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2077" y="555"/>
-        </scene>
-        <!--H/VStackLayerWrapperView-->
-        <scene sceneID="9vs-48-r50">
-            <objects>
-                <viewController id="5WQ-Nd-2jr" customClass="HVStackWrapperViewDemoViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="UXA-yy-xad">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="S0H-ab-HM3"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="H/VStackLayerWrapperView" id="lcg-7o-MOp"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eb2-QC-Y1T" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2077" y="-790"/>
         </scene>
     </scenes>
     <resources>
