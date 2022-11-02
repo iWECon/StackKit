@@ -197,7 +197,7 @@ extension HStackView {
             frame.size.height = contentSize.height
         }
         for subview in effectiveSubviews {
-            subview.frame.size.height = _stackContentWidth
+            subview.frame.size.height = _stackContentHeight
             
             // fix #https://github.com/iWECon/StackKit/issues/21
             guard alignment == .center else {

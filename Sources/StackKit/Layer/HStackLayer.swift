@@ -169,7 +169,7 @@ extension HStackLayer {
             frame.size.height = contentSize.height
         }
         for sublayer in effectiveSublayers {
-            sublayer.frame.size.height = _stackContentWidth
+            sublayer.frame.size.height = _stackContentHeight
             
             guard alignment == .center else {
                 continue
