@@ -141,7 +141,7 @@ extension HStackLayer {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerLayers().map({ isSpacerBetweenInTwoLayers(spacerLayer: $0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return Swift.max(0, (frame.width - viewsWidth() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number)))
+        return Swift.max(0, (_stackContentRect.width - viewsWidth() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number)))
     }
     
     private func viewsWidth() -> CGFloat {
@@ -169,7 +169,7 @@ extension HStackLayer {
             frame.size.height = contentSize.height
         }
         for sublayer in effectiveSublayers {
-            sublayer.frame.size.height = _stackContentWidth
+            sublayer.frame.size.height = _stackContentHeight
             
             guard alignment == .center else {
                 continue
@@ -179,7 +179,7 @@ extension HStackLayer {
     }
     
     private func fillWidth() {
-        let maxW = frame.width - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivier()
+        let maxW = _stackContentRect.width - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivier()
         var w = (maxW) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -193,7 +193,7 @@ extension HStackLayer {
 extension HStackLayer {
     
     private func fillDivider() {
-        let maxWidth = effectiveSublayers.filter({ ($0 as? DividerLayer) == nil }).map({ $0.frame.size.height }).max() ?? frame.height
+        let maxWidth = effectiveSublayers.filter({ ($0 as? DividerLayer) == nil }).map({ $0.frame.size.height }).max() ?? _stackContentRect.height
         for divider in effectiveSublayers.compactMap({ $0 as? DividerLayer }) {
             var maxLength = divider.maxLength
             if maxLength == .greatestFiniteMagnitude {
