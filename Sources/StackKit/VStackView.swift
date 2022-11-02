@@ -162,7 +162,7 @@ extension VStackView {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return (frame.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number))
+        return (_stackContentRect.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number))
     }
     
     private func viewsHeight() -> CGFloat {
@@ -201,7 +201,7 @@ extension VStackView {
     
     /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
-        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivider()
+        let maxH = _stackContentRect.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivider()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -216,7 +216,7 @@ extension VStackView {
 extension VStackView {
     
     private func fillDivider() {
-        let maxWidth = effectiveSubviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.width }).max() ?? frame.width
+        let maxWidth = effectiveSubviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.width }).max() ?? _stackContentRect.width
         for divider in effectiveSubviews.compactMap({ $0 as? DividerView }) {
             var maxLength = divider.maxLength
             if maxLength == .greatestFiniteMagnitude {
@@ -274,7 +274,7 @@ extension VStackView {
         
         // 非 spacerView 的所有宽度
         let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
-        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.lengthOfAllFixedLengthSpacer())
+        let spacersHeight = (_stackContentRect.height - unspacerViewsMaxHeight - self.lengthOfAllFixedLengthSpacer())
         let spacerHeight = spacersHeight / CGFloat(self.dynamicSpacerViews().count)
         
         let spacerViews = self.spacerViews()

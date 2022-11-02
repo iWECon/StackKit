@@ -143,7 +143,7 @@ extension VStackLayer {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerLayers().map({ isSpacerBetweenInTwoLayers(spacerLayer: $0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return Swift.max(0, (frame.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number)))
+        return Swift.max(0, (_stackContentRect.height - viewsHeight() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number)))
     }
     
     private func viewsHeight() -> CGFloat {
@@ -183,7 +183,7 @@ extension VStackLayer {
     ///
     /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
-        let maxH = frame.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivier()
+        let maxH = _stackContentRect.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivier()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -197,7 +197,7 @@ extension VStackLayer {
 extension VStackLayer {
     
     private func fillDivider() {
-        let maxWidth = effectiveSublayers.filter({ ($0 as? DividerLayer) == nil }).map({ $0.frame.size.width }).max() ?? frame.width
+        let maxWidth = effectiveSublayers.filter({ ($0 as? DividerLayer) == nil }).map({ $0.frame.size.width }).max() ?? _stackContentRect.width
         for divider in effectiveSublayers.compactMap({ $0 as? DividerLayer }) {
             var maxLength = divider.maxLength
             if maxLength == .greatestFiniteMagnitude {
@@ -251,7 +251,7 @@ extension VStackLayer {
         }
         
         let unspacerViewsMaxHeight = unspacerViewsHeight + unspacerViewsSpacing
-        let spacersHeight = (frame.height - unspacerViewsMaxHeight - self.lengthOfAllFixedLengthSpacer())
+        let spacersHeight = (_stackContentRect.height - unspacerViewsMaxHeight - self.lengthOfAllFixedLengthSpacer())
         let spacerWidth = spacersHeight / CGFloat(self.dynamicSpacerLayers().count)
         
         let spacerViews = self.spacerLayers()

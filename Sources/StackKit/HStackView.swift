@@ -170,7 +170,7 @@ extension HStackView {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
         let number = unspacerViews.count - spacersCount - 1
-        return (frame.width - viewsWidth() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number))
+        return (_stackContentRect.width - viewsWidth() - lengthOfAllFixedLengthSpacer()) / CGFloat(max(1, number))
     }
     
     private func viewsWidth() -> CGFloat {
@@ -208,7 +208,7 @@ extension HStackView {
     }
     
     private func fillWidth() {
-        let maxW = frame.width - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivider()
+        let maxW = _stackContentRect.width - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivider()
         var w = (maxW) / CGFloat(viewsWithoutSpacerAndDivider().count)
         
         let unspacersView = viewsWithoutSpacerAndDivider()
@@ -223,7 +223,7 @@ extension HStackView {
 extension HStackView {
     
     private func fillDivider() {
-        let maxHeight = effectiveSubviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.height }).max() ?? frame.height
+        let maxHeight = effectiveSubviews.filter({ ($0 as? DividerView) == nil }).map({ $0.frame.size.height }).max() ?? _stackContentRect.height
         for divider in effectiveSubviews.compactMap({ $0 as? DividerView }) {
             var maxLength = divider.maxLength
             if maxLength == .greatestFiniteMagnitude {
