@@ -8,7 +8,9 @@ public enum FitType {
     case width
     case height
     
+    /// Set fixed height, width auto calculate
     case widthFlexible
+    /// Set fixed width, height auto calculate
     case heightFlexible
     
     var isFlexible: Bool {
@@ -88,18 +90,27 @@ extension UIView: FitSize {
         let sizeThatFits = sizeThatFits(CGSize(width: fitWidth, height: fitHeight))
         
         switch fitType {
-        case .width, .height, .widthFlexible, .heightFlexible:
+        case .width, .height:
             if fitWidth != .greatestFiniteMagnitude {
-                size.width = fitType.isFlexible ? sizeThatFits.width : fitWidth
+                size.width = fitWidth
             } else {
                 size.width = sizeThatFits.width
             }
             
             if fitHeight != .greatestFiniteMagnitude {
-                size.height = fitType.isFlexible ? sizeThatFits.height : fitHeight
+                size.height = fitHeight
             } else {
                 size.height = sizeThatFits.height
             }
+            
+        case .widthFlexible:
+            size.height = fitHeight
+            size.width = sizeThatFits.width
+            
+        case .heightFlexible:
+            size.height = fitType.isFlexible ? sizeThatFits.height : fitHeight
+            size.width = fitWidth
+            
         case .content:
             size = Size(width: sizeThatFits.width, height: sizeThatFits.height)
         }
