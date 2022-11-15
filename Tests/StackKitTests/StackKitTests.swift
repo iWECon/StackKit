@@ -22,4 +22,21 @@ final class StackKitTests: XCTestCase {
         print(container.frame.size)
         XCTAssertEqual(label.frame.minY, (container.frame.height - label.frame.height) / 2)
     }
+    
+    func testCenter() throws {
+        
+        let label = UILabel()
+        let vcontainer  = VStackView(alignment: .center, distribution: .spacing(2)) {
+            label.stack.then {
+                $0.text = "你好啊"
+            }
+        }
+        let container = HStackView(alignment: .center, padding: UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)) {
+            vcontainer
+        }
+        container.stack.height(50)
+        container.sizeToFit()
+        
+        XCTAssertEqual(vcontainer.center.x, container.center.x)
+    }
 }
