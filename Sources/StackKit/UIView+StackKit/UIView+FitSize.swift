@@ -104,6 +104,9 @@ extension UIView: FitSize {
             size = Size(width: sizeThatFits.width, height: sizeThatFits.height)
         }
         
+        // fix when set single width or height not working
+        _fixedSize(&size)
+        
         size.width = applyMinMax(toWidth: size.width)
         size.height = applyMinMax(toHeight: size.height)
         
