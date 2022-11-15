@@ -38,5 +38,10 @@ final class StackKitTests: XCTestCase {
         container.sizeToFit()
         
         XCTAssertEqual(vcontainer.center.x, container.center.x)
+        
+        container.stack.height(nil)
+        vcontainer.stack.height(50)
+        container.sizeToFit()
+        XCTAssertEqual(vcontainer.center.x, container.center.x)
     }
 }
