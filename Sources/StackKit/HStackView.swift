@@ -148,7 +148,7 @@ open class HStackView: UIView, StackView {
     }
     
     open override func sizeToFit() {
-        frame.size = sizeThatFits(.zero)
+        _fitSize(with: self._stackKit_fitType)
     }
     
     open override var intrinsicContentSize: CGSize {
