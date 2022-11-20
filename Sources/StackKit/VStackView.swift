@@ -18,9 +18,7 @@ open class VStackView: UIView, StackView {
         self.distribution = distribution
         self.padding = padding
         
-        for v in content() {
-            addSubview(v)
-        }
+        addContent(content)
     }
     
     public required init?(coder: NSCoder) {
@@ -35,15 +33,11 @@ open class VStackView: UIView, StackView {
     
     public func resetContent(@_StackKitVStackContentResultBuilder _ content: () -> [UIView]) {
         subviews.forEach { $0.removeFromSuperview() }
-        for v in content() {
-            addSubview(v)
-        }
+        addContent(content)
     }
     
     open override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
-        
-        subview._tryFixSize()
         
         // keep spacers between views and spacers have only one spacer
         guard (subview as? SpacerView) != nil,
@@ -105,35 +99,24 @@ open class VStackView: UIView, StackView {
         
         makeSubviewsAlignment()
         
+        fillDivider()
+        fillSpecifySpacer()
+        fillSpacer()
+        
         switch distribution {
         case .spacing(let spacing):
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             makeSpacing(spacing)
             
         case .autoSpacing:
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
         case .fillWidth(let spacing):
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             let spacing = spacing ?? autoSpacing()
             makeSpacing(spacing)
             fillWidth()
             
         case .fill:
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
             fillHeight()
             makeSpacing(0)
             fillWidth()

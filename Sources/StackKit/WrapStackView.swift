@@ -53,19 +53,6 @@ open class WrapStackView: UIView {
         subviews.filter { $0._isEffectiveView }
     }
     
-    open override func addSubview(_ view: UIView) {
-        if let lastViewFrame = effectiveSubviews.last?.frame {
-            view.frame.origin = lastViewFrame.origin
-        }
-        super.addSubview(view)
-    }
-    
-    open override func didAddSubview(_ subview: UIView) {
-        super.didAddSubview(subview)
-        
-        subview._tryFixSize()
-    }
-    
     private class Attribute: Equatable {
         var section: Int  // 第几行
         var subviews: [UIView] = []

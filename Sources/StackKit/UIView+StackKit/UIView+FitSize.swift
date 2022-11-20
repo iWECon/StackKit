@@ -5,11 +5,15 @@ var _StackKit_FitTypeKey = "_StackKit_FitTypeKey"
 public enum FitType {
     case content
     
+    /// **Adjust the view’s height** based on the reference width.
     case width
+    
+    /// **Adjust the view’s width** based on the reference height.
     case height
     
     /// Set fixed height, width auto calculate
     case widthFlexible
+    
     /// Set fixed width, height auto calculate
     case heightFlexible
     
@@ -80,8 +84,8 @@ extension UIView: FitSize {
             }
             
         case .content:
-            fitWidth = size.width ?? bounds.width
-            fitHeight = size.height ?? bounds.height
+            fitWidth = size.width ?? _stackKit_maxWidth ?? bounds.width
+            fitHeight = size.height ?? _stackKit_maxHeight ?? bounds.height
         }
         
         fitWidth = _validateValue(fitWidth)

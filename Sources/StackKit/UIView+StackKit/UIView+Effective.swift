@@ -9,11 +9,6 @@ extension UIView {
     var _isEffectiveView: Bool {
         !_isIneffectiveView
     }
-    
-    func _tryFixSize() {
-        guard frame.size == .zero else { return }
-        sizeToFit()
-    }
 }
 
 extension CALayer {

@@ -30,9 +30,7 @@ open class VStackLayer: CALayer, StackLayer {
         self.distribution = distribution
         self.padding = padding
         
-        for l in content() {
-            addSublayer(l)
-        }
+        addContent(content)
     }
     
     public func addContent(@_StackKitVStackLayerContentResultBuilder _ content: () -> [CALayer]) {
@@ -43,9 +41,7 @@ open class VStackLayer: CALayer, StackLayer {
     
     public func resetContent(@_StackKitVStackLayerContentResultBuilder _ content: () -> [CALayer]) {
         sublayers?.forEach { $0.removeFromSuperlayer() }
-        for v in content() {
-            addSublayer(v)
-        }
+        addContent(content)
     }
     
     public var contentSize: CGSize {
@@ -89,35 +85,24 @@ open class VStackLayer: CALayer, StackLayer {
         
         makeSublayersAlignment()
         
+        fillDivider()
+        fillSpecifySpacer()
+        fillSpacer()
+        
         switch distribution {
         case .spacing(let spacing):
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             makeSpacing(spacing)
             
         case .autoSpacing:
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
         case .fillWidth(let spacing):
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             let spacing = spacing ?? autoSpacing()
             makeSpacing(spacing)
             fillWidth()
             
         case .fill:
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
             fillHeight()
             makeSpacing(0)
             fillWidth()
