@@ -11,10 +11,7 @@ public enum FitType {
     /// **Adjust the view’s width** based on the reference height.
     case height
     
-    /// Set fixed height, width auto calculate
     case widthFlexible
-    
-    /// Set fixed width, height auto calculate
     case heightFlexible
     
     var isFlexible: Bool {

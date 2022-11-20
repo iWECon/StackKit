@@ -1,5 +1,6 @@
 import UIKit
 
+/// Specific implementation of `Divider` in H/VStackLayer
 class DividerLayer: CALayer, _Divider {
     var maxLength: CGFloat = .greatestFiniteMagnitude
     

@@ -1,6 +1,6 @@
 import UIKit
 
-/// Only available in `FreeStackView`
+/// Specific implementation of `Spacer` in H/VStackView
 class SpacerView: UIView, _Spacer {
     var length: CGFloat = .greatestFiniteMagnitude
     var min: CGFloat = .leastNonzeroMagnitude

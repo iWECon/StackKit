@@ -56,10 +56,12 @@ open class _StackLayerWrapperView: UIView {
     }
     
     private func convertViewToImage(_ subview: UIView) {
+        //
         // render view to image and create CALayer with it
         //
-        // If you use `view.layer` directly, there may be problems with display, for example: `UILabel` -> `_UILabelLayer` cannot display text normally
-        // 如果直接使用 view.layer 可能显示会有问题, 例如: UILabel -> _UILabelLayer 无法正常显示文字
+        // If you use `view.layer` directly, there may be problems with display,
+        // for example: `UILabel` -> `_UILabelLayer` cannot display text normally
+        // 
         let image = UIGraphicsImageRenderer(bounds: subview.bounds).image { context in
             subview.layer.render(in: context.cgContext)
         }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		080677C628BE7D8B00000E16 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080677C528BE7D8B00000E16 /* ViewController.swift */; };
 		080677C828BE7DA400000E16 /* WrapStackDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080677C728BE7DA400000E16 /* WrapStackDemoViewController.swift */; };
+		0815C093292A2B37001655C6 /* Preview1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815C092292A2B37001655C6 /* Preview1ViewController.swift */; };
 		08A24B8428E49A9600CDD7E2 /* LookinServer in Frameworks */ = {isa = PBXBuildFile; productRef = 08A24B8328E49A9600CDD7E2 /* LookinServer */; };
 		08E16CD9289ABA1C0019D7CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E16CD8289ABA1C0019D7CB /* AppDelegate.swift */; };
 		08E16CDB289ABA1C0019D7CB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E16CDA289ABA1C0019D7CB /* SceneDelegate.swift */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		080677C528BE7D8B00000E16 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		080677C728BE7DA400000E16 /* WrapStackDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapStackDemoViewController.swift; sourceTree = "<group>"; };
+		0815C092292A2B37001655C6 /* Preview1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview1ViewController.swift; sourceTree = "<group>"; };
 		08E16CD5289ABA1C0019D7CB /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E16CD8289ABA1C0019D7CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08E16CDA289ABA1C0019D7CB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				08E16CE1289ABA1D0019D7CB /* Assets.xcassets */,
 				08E16CE3289ABA1D0019D7CB /* LaunchScreen.storyboard */,
 				08E16CE6289ABA1D0019D7CB /* Info.plist */,
+				0815C092292A2B37001655C6 /* Preview1ViewController.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080677C628BE7D8B00000E16 /* ViewController.swift in Sources */,
+				0815C093292A2B37001655C6 /* Preview1ViewController.swift in Sources */,
 				08E16CDD289ABA1C0019D7CB /* HVStackDemoViewController.swift in Sources */,
 				080677C828BE7DA400000E16 /* WrapStackDemoViewController.swift in Sources */,
 				08E16CD9289ABA1C0019D7CB /* AppDelegate.swift in Sources */,

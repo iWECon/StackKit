@@ -141,14 +141,6 @@ open class HStackView: UIView, StackView {
 
 extension HStackView {
     
-    /// 自动间距
-    ///
-    /// Z = 在两个 view 之间的 spacer 的数量 ( spacer 的设计是忽略 spacing 的 )
-    /// A = 排除所有 spacer
-    /// B = frame.width - A.widths
-    /// C = B / (A.count - 1 - Z)
-    /// C 即是最终结果
-    ///
     private func autoSpacing() -> CGFloat {
         let unspacerViews = viewsWithoutSpacer()
         let spacersCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
@@ -237,19 +229,14 @@ extension HStackView {
         }
     }
     
-    /// 填充 spacer
-    ///
-    /// A = viewsWithoutSpacer().widths
-    /// B = frame.width - A - viewsWithoutSpacer.spacings
     private func fillSpacer() {
         let unspacerViews = viewsWithoutSpacer()
         guard unspacerViews.count != effectiveSubviews.count else { return }
         
-        // 在 view 与 view 之间的 spacer view 数量: 两个 view 夹一个 spacer view
         let betweenInViewsCount = spacerViews().map({ isSpacerBetweenInTwoViews(spacerView: $0) }).filter({ $0 }).count
-        // 非 spacer view 的总宽度
+        
         let unspacerViewsWidth = viewsWidth()
-        // 排除 spacer view 后的间距
+        
         let unspacerViewsSpacing: CGFloat
         
         if unspacerViews.count == 1 {
@@ -257,7 +244,6 @@ extension HStackView {
         } else {
             switch distribution {
             case .spacing(let spacing):
-                // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
                 unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
             case .fillHeight(let spacing):
@@ -271,7 +257,6 @@ extension HStackView {
             }
         }
         
-        // 非 spacerView 的所有宽度
         let unspacerViewsMaxWidth = unspacerViewsWidth + unspacerViewsSpacing
         let spacersWidth = (_stackContentWidth - unspacerViewsMaxWidth - self.lengthOfAllFixedLengthSpacer())
         let spacerWidth = spacersWidth / CGFloat(self.dynamicSpacerViews().count)

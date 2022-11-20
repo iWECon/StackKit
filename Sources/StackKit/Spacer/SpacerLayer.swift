@@ -1,5 +1,6 @@
 import UIKit
 
+/// Specific implementation of `Spacer` in H/VStackLayer
 class SpacerLayer: CALayer, _Spacer {
     var length: CGFloat = .greatestFiniteMagnitude
     var min: CGFloat = .leastNonzeroMagnitude
@@ -24,11 +25,10 @@ class SpacerLayer: CALayer, _Spacer {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // 自定义长度范围
     var isCustomRange: Bool {
         (min != .leastNonzeroMagnitude || max != .greatestFiniteMagnitude) && length == .greatestFiniteMagnitude
     }
-    // 自定义固定长度
+    
     var isDefine: Bool {
         length != .greatestFiniteMagnitude
     }

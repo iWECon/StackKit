@@ -1,11 +1,9 @@
 import UIKit
 
-///
 /// All subviews(`UIView`) will be converted to `CALayer` to display.
-/// 该类仅作展示使用，所有的 UIView 均会被转换为 CALayer 作为显示
 ///
-/// There may be performance problems in heavy use. It is recommended to use `VStackView` / `HStackView` when there are many views.
-/// 大量使用可能会有性能问题, 视图较多时建议直接使用 `VStackView` / `HStackView` 或使用 `H/VStackLayer` 替代.
+/// ⚠️ There may be performance problems in heavy use,
+/// It is recommended to use `VStackView` / `HStackView` when there are many views.
 ///
 open class HStackLayerWrapperView: _StackLayerWrapperView {
     
