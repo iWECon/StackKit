@@ -164,6 +164,12 @@ extension VStackView {
                     subview.frame.origin.y = previousView.frame.maxY + spacing
                 }
             }
+            
+            guard let offset = subview._stackKit_offset else {
+                continue
+            }
+            subview.frame.origin.x += offset.x
+            subview.frame.origin.y += offset.y
         }
     }
     
