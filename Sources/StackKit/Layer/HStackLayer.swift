@@ -203,19 +203,16 @@ extension HStackLayer {
         }
     }
     
-    /// 填充 spacer
-    ///
-    /// A = viewsWithoutSpacer().widths
-    /// B = frame.width - A - viewsWithoutSpacer.spacings
+    /// Fill Spacer's length.
     private func fillSpacer() {
         let unspacerViews = viewsWithoutSpacer()
         guard unspacerViews.count != effectiveSublayers.count else { return }
         
-        // 在 view 与 view 之间的 spacer view 数量: 两个 view 夹一个 spacer view
+        // number of `spacer view` between in two view
         let betweenInViewsCount = spacerLayers().map({ isSpacerBetweenInTwoLayers(spacerLayer: $0) }).filter({ $0 }).count
-        // 非 spacer view 的总宽度
+        // subviews(effectiveSubviews) width (without spacer view)
         let unspacerViewsWidth = viewsWidth()
-        // 排除 spacer view 后的间距
+        
         let unspacerViewsSpacing: CGFloat
         
         if unspacerViews.count == 1 {
@@ -223,7 +220,7 @@ extension HStackLayer {
         } else {
             switch distribution {
             case .spacing(let spacing):
-                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
             case .fillHeight(let spacing):
                 unspacerViewsSpacing = (spacing ?? autoSpacing()) * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
@@ -236,7 +233,6 @@ extension HStackLayer {
             }
         }
         
-        // 非 spacerView 的所有宽度
         let unspacerViewsMaxWidth = unspacerViewsWidth + unspacerViewsSpacing
         let spacersWidth = (_stackContentWidth - unspacerViewsMaxWidth - self.lengthOfAllFixedLengthSpacer())
         let spacerWidth = spacersWidth / CGFloat(self.dynamicSpacerLayers().count)

@@ -1,5 +1,6 @@
 import UIKit
 
+/// Specific implementation of `Divider` in H/VStackView
 class DividerView: UIView, _Divider {
     
     var maxLength: CGFloat = .greatestFiniteMagnitude

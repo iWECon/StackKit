@@ -165,8 +165,6 @@ extension VStackLayer {
         }
     }
     
-    ///
-    /// 填充高度, 所有视图（排除 spacer）高度一致
     private func fillHeight() {
         let maxH = _stackContentRect.height - lengthOfAllFixedLengthSpacer() - lengthOfAllFixedLengthDivier()
         var h = (maxH) / CGFloat(viewsWithoutSpacerAndDivider().count)
@@ -207,14 +205,13 @@ extension VStackLayer {
         }
     }
     
-    /// 填充 spacer
     private func fillSpacer() {
         let unspacerViews = viewsWithoutSpacer()
         guard unspacerViews.count != effectiveSublayers.count else { return }
         
         let betweenInViewsCount = spacerLayers().map({ isSpacerBetweenInTwoLayers(spacerLayer: $0) }).filter({ $0 }).count
         let unspacerViewsHeight = viewsHeight()
-        // 排除 spacer view 后的间距
+        
         let unspacerViewsSpacing: CGFloat
         
         if unspacerViews.count == 1 {
@@ -222,7 +219,7 @@ extension VStackLayer {
         } else {
             switch distribution {
             case .spacing(let spacing):
-                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1) // 正常 spacing 数量: (views.count - 1), spacer 左右的视图没有间距，所以需要再排除在 view 之间的 spacer 数量
+                unspacerViewsSpacing = spacing * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
                 
             case .fillWidth(let spacing):
                 unspacerViewsSpacing = (spacing ?? autoSpacing()) * CGFloat(unspacerViews.count - betweenInViewsCount - 1)
