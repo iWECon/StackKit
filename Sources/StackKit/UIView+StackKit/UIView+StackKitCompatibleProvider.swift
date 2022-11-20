@@ -14,6 +14,12 @@ extension UIView: StackKitCompatibleProvider { }
 extension StackKitCompatible where Base: UIView {
     
     @discardableResult
+    public func offset(_ value: CGPoint?) -> Self {
+        view._stackKit_offset = value
+        return self
+    }
+    
+    @discardableResult
     public func width(_ value: CGFloat?) -> Self {
         view._stackKit_width = value
         return self

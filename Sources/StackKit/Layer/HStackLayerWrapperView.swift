@@ -28,9 +28,7 @@ open class HStackLayerWrapperView: _StackLayerWrapperView {
         hStackLayer.distribution = distribution
         hStackLayer.padding = padding
         
-        for v in content() {
-            addSubview(v)
-        }
+        addContent(content)
     }
     
     public required init?(coder: NSCoder) {

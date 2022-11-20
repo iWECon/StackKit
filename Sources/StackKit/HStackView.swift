@@ -18,9 +18,7 @@ open class HStackView: UIView, StackView {
         self.distribution = distribution
         self.padding = padding
         
-        for v in content() {
-            addSubview(v)
-        }
+        addContent(content)
     }
     
     public required init?(coder: NSCoder) {
@@ -35,15 +33,11 @@ open class HStackView: UIView, StackView {
     
     public func resetContent(@_StackKitHStackContentResultBuilder _ content: () -> [UIView]) {
         subviews.forEach { $0.removeFromSuperview() }
-        for v in content() {
-            addSubview(v)
-        }
+        addContent(content)
     }
     
     open override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
-
-        subview._tryFixSize()
         
         // keep spacers between views and spacers have only one spacer
         guard (subview as? SpacerView) != nil,
@@ -105,35 +99,24 @@ open class HStackView: UIView, StackView {
         
         makeSubviewsAlignment()
         
+        fillDivider()
+        fillSpecifySpacer()
+        fillSpacer()
+        
         switch distribution {
         case .spacing(let spacing):
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             makeSpacing(spacing)
             
         case .autoSpacing:
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             let spacing = autoSpacing()
             makeSpacing(spacing)
             
         case .fillHeight(let spacing):
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
-            
             let spacing = spacing ?? autoSpacing()
             makeSpacing(spacing)
             fillHeight()
             
         case .fill:
-            fillDivider()
-            fillSpecifySpacer()
-            fillSpacer()
             fillWidth()
             makeSpacing(0)
             fillHeight()
@@ -189,6 +172,12 @@ extension HStackView {
                     subview.frame.origin.x = previousView.frame.maxX + spacing
                 }
             }
+            
+            guard let offset = subview._stackKit_offset else {
+                continue
+            }
+            subview.frame.origin.x += offset.x
+            subview.frame.origin.y += offset.y
         }
     }
     

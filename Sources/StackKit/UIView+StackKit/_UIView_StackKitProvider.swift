@@ -1,6 +1,8 @@
 import UIKit
 
 struct _UIView_StackKitKeys {
+    static var offsetKey = "StackKit_offsetKey"
+    
     static var widthKey = "StackKit_widthKey"
     static var heightKey = "StackKit_heightKey"
     
@@ -12,6 +14,8 @@ struct _UIView_StackKitKeys {
 }
 
 protocol _UIView_StackKitProvider {
+    var _stackKit_offset: CGPoint? { get set }
+    
     var _stackKit_width: CGFloat? { get set }
     var _stackKit_height: CGFloat? { get set }
     
@@ -23,6 +27,22 @@ protocol _UIView_StackKitProvider {
 }
 
 extension UIView: _UIView_StackKitProvider {
+    
+    var _stackKit_offset: CGPoint? {
+        get {
+            guard let value = Runtime.getProperty(self, key: &_UIView_StackKitKeys.offsetKey) as? NSValue else {
+                return nil
+            }
+            return value.cgPointValue
+        }
+        set {
+            guard let newValue else {
+                Runtime.setProperty(self, key: &_UIView_StackKitKeys.offsetKey, value: nil, policy: .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                return
+            }
+            Runtime.setProperty(self, key: &_UIView_StackKitKeys.offsetKey, value: NSValue(cgPoint: newValue), policy: .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
     
     var _stackKit_width: CGFloat? {
         get {
