@@ -149,7 +149,7 @@ extension UIView {
         var height: CGFloat?
         
         var cgSize: CGSize {
-            CGSize(width: width ?? 0, height: height ?? 0)
+            CGSize(width: ceil(width ?? 0), height: ceil(height ?? 0))
         }
     }
     

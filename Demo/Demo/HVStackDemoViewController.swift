@@ -153,35 +153,31 @@ class HVStackDemoViewController: UIViewController {
     
     let descriptionContent = VStackView {
         Spacer(length: 12)
-        HStackView {
-            Spacer(length: 12)
+        VStackView(alignment: .left, distribution: .spacing(24)) {
+            UILabel().stack.then {
+                $0.font = .systemFont(ofSize: 20, weight: .semibold)
+                $0.text = "⚠️ Important"
+            }
+            UILabel().stack.maxWidth(UIScreen.main.bounds.width - 48).then {
+                $0.textColor = .systemPink
+                $0.font = .systemFont(ofSize: 14, weight: .medium)
+                $0.numberOfLines = 0
+                $0.text = "`Spacer` will ignore the given spacing in H/VStack\nSpacer 会忽略在 H/VStack 中给定的 spacing, 也就是说可以使用 Spacer 自由调整 spacing"
+            }
             
-            VStackView(alignment: .left, distribution: .spacing(24)) {
-                UILabel().stack.then {
-                    $0.font = .systemFont(ofSize: 20, weight: .semibold)
-                    $0.text = "⚠️ Important"
-                }
-                UILabel().stack.maxWidth(UIScreen.main.bounds.width - 48).then {
-                    $0.textColor = .systemPink
-                    $0.font = .systemFont(ofSize: 14, weight: .medium)
-                    $0.numberOfLines = 0
-                    $0.text = "`Spacer` will ignore the given spacing in H/VStack\nSpacer 会忽略在 H/VStack 中给定的 spacing, 也就是说可以使用 Spacer 自由调整 spacing"
-                }
-                
-                UILabel().stack.then {
-                    $0.textColor = .systemPink
-                    $0.font = .systemFont(ofSize: 14, weight: .medium)
-                    $0.numberOfLines = 0
-                    $0.text = "Do not support relative layout for the time being\n暂不支持相对布局（正在开发中）"
-                }
-                
-                // specify `.maxWidth`
-                UILabel().stack.maxWidth(UIScreen.main.bounds.width - 48).then {
-                    $0.textColor = .systemPink
-                    $0.font = .systemFont(ofSize: 14, weight: .medium)
-                    $0.numberOfLines = 0
-                    $0.text = "The subview may exceed the width/height of the parent view, and you need to specify the maximum width/height manually, add .maxWidth/.maxHeight after `.stack`\n子视图可能超过父视图的宽高，此时需要你手动设定最大宽度或最大高度"
-                }
+            UILabel().stack.then {
+                $0.textColor = .systemPink
+                $0.font = .systemFont(ofSize: 14, weight: .medium)
+                $0.numberOfLines = 0
+                $0.text = "Do not support relative layout for the time being\n暂不支持相对布局（正在开发中）"
+            }
+            
+            // specify `.maxWidth`
+            UILabel().stack.maxWidth(UIScreen.main.bounds.width - 48).then {
+                $0.textColor = .systemPink
+                $0.font = .systemFont(ofSize: 14, weight: .medium)
+                $0.numberOfLines = 0
+                $0.text = "The subview may exceed the width/height of the parent view, and you need to specify the maximum width/height manually, add .maxWidth/.maxHeight after `.stack`\n子视图可能超过父视图的宽高，此时需要你手动设定最大宽度或最大高度"
             }
         }
         Spacer(length: 12)

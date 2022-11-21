@@ -74,13 +74,13 @@
 				08E16CD8289ABA1C0019D7CB /* AppDelegate.swift */,
 				08E16CDA289ABA1C0019D7CB /* SceneDelegate.swift */,
 				080677C528BE7D8B00000E16 /* ViewController.swift */,
+				0815C092292A2B37001655C6 /* Preview1ViewController.swift */,
 				08E16CDC289ABA1C0019D7CB /* HVStackDemoViewController.swift */,
 				080677C728BE7DA400000E16 /* WrapStackDemoViewController.swift */,
 				08E16CDE289ABA1C0019D7CB /* Main.storyboard */,
 				08E16CE1289ABA1D0019D7CB /* Assets.xcassets */,
 				08E16CE3289ABA1D0019D7CB /* LaunchScreen.storyboard */,
 				08E16CE6289ABA1D0019D7CB /* Info.plist */,
-				0815C092292A2B37001655C6 /* Preview1ViewController.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
