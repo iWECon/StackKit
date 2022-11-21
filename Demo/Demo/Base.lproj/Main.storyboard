@@ -74,7 +74,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NVa-Eg-Ijb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3648" y="-550"/>
+            <point key="canvasLocation" x="1849" y="-581"/>
         </scene>
         <!--H/VStackView-->
         <scene sceneID="Lai-fH-3ho">

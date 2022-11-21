@@ -62,14 +62,11 @@ open class VStackView: UIView, StackView {
     }
     
     public var contentSize: CGSize {
-        let rect = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { partialResult, rect in
-            partialResult.union(rect)
-        }
-        let offsetYLength: CGFloat = effectiveSubviews.map({ $0.frame.origin.y }).filter({ $0 < 0 }).min() ?? 0
-        return CGSize(
-            width: rect.width + paddingHorizontally,
-            height: rect.height + paddingBottom + offsetYLength
-        )
+        let width = effectiveSubviews.map({ $0.bounds.width }).max() ?? 0
+        let height = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero, { $0.union($1) }).height
+        
+        let offsetYLength: CGFloat = effectiveSubviews.map({ $0.frame.minY }).filter({ $0 < 0 }).min() ?? 0
+        return CGSize(width: width + paddingHorizontally, height: height + paddingBottom + offsetYLength)
     }
     
     open func hideIfNoEffectiveViews() {
