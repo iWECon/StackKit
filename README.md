@@ -36,19 +36,24 @@ VStackView(padding: UIEdgeInsets)
 ### Subview size is fixed
 
 ```swift
-logoView.stack.size(CGSize)
+logoView.stack.size(CGSize?)
 ```
 
 ### Min or Max width/height
 
 ```swift
-briefLabel.stack.minWidth(CGFloat).maxWidth(CGFloat)
+briefLabel.stack.minWidth(CGFloat?)
+                .maxWidth(CGFloat?)
+                .minHeight(CGFloat?)
+                .maxHeight(CGFloat?)
 ```
 
 ### Offset
 
 ```swift
-briefLabel.stack.offset(CGPoint)
+briefLabel.stack.offset(CGPoint?)
+                .offset(x: CGFloat?)
+                .offset(y: CGFloat?)
 ```
 
 ### SizeToFit
@@ -85,10 +90,10 @@ VStackView {
 
 ```swift
 // update text
-briefLabel.text = "Bump version to 1.2.1"
+briefLabel.text = "Bump version to 1.2.2"
 
 // stackContainer means any instance of HStackView or VStackView
-stackContainer.setNeedsLayout() 
+stackContainer.setNeedsLayout() // or .sizeToFit() 
 ```
 
 # 🤔 

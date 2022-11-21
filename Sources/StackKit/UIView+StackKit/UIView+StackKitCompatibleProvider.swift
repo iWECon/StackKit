@@ -15,7 +15,20 @@ extension StackKitCompatible where Base: UIView {
     
     @discardableResult
     public func offset(_ value: CGPoint?) -> Self {
-        view._stackKit_offset = value
+        view._stackKit_offsetX = value?.x
+        view._stackKit_offsetY = value?.y
+        return self
+    }
+    
+    @discardableResult
+    public func offset(x value: CGFloat?) -> Self {
+        view._stackKit_offsetX = value
+        return self
+    }
+    
+    @discardableResult
+    public func offset(y value: CGFloat?) -> Self {
+        view._stackKit_offsetY = value
         return self
     }
     

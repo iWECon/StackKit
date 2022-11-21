@@ -62,13 +62,14 @@ open class HStackView: UIView, StackView {
     }
     
     public var contentSize: CGSize {
-        let h = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+        let rect = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
-        }.width
-        let w = effectiveSubviews.map({ $0.bounds }).reduce(CGRect.zero) { result, rect in
-            result.union(rect)
-        }.height
-        return CGSize(width: h + paddingRight, height: w + paddingVertically)
+        }
+        let offsetXLength = effectiveSubviews.map({ $0.frame.minX }).filter({ $0 < 0 }).min() ?? 0
+        return CGSize(
+            width: rect.width + paddingRight + offsetXLength,
+            height: rect.height + paddingVertically
+        )
     }
     
     open func hideIfNoEffectiveViews() {
@@ -165,11 +166,12 @@ extension HStackView {
                 }
             }
             
-            guard let offset = subview._stackKit_offset else {
-                continue
+            if let offsetX = subview._stackKit_offsetX {
+                subview.frame.origin.x += offsetX
             }
-            subview.frame.origin.x += offset.x
-            subview.frame.origin.y += offset.y
+            if let offsetY = subview._stackKit_offsetY {
+                subview.frame.origin.y += offsetY
+            }
         }
     }
     
