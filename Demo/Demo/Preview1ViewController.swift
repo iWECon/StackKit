@@ -20,6 +20,7 @@ class Preview1ViewController: UIViewController {
     @Published var name = "iWECon/StackKit"
     @Published var brief = "The best way to use HStack and VStack in UIKit, and also supports Spacer and Divider."
     
+    var nameCancellable: AnyCancellable?
     var cancellables: Set<AnyCancellable> = []
     
     deinit {

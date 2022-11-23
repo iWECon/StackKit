@@ -35,6 +35,21 @@ extension StackKitCompatible where Base: UIView {
         }.store(in: &cancellables)
         return self
     }
+    
+    @discardableResult
+    public func receive<Value>(
+        publisher: Published<Value>.Publisher,
+        cancellable: inout AnyCancellable?,
+        sink receiveValue: @escaping ((Base, Published<Value>.Publisher.Output) -> Void)
+    ) -> Self
+    {
+        let v = self.view
+        cancellable = publisher.sink(receiveValue: { [weak v] output in
+            guard let v else { return }
+            receiveValue(v, output)
+        })
+        return self
+    }
 
     @discardableResult
     public func receive(
@@ -49,6 +64,21 @@ extension StackKitCompatible where Base: UIView {
         }
         return self
     }
+    
+    @discardableResult
+    public func receive(
+        isHidden publisher: Published<Bool>.Publisher,
+        cancellable: inout AnyCancellable?
+    ) -> Self
+    {
+        receive(publisher: publisher, cancellable: &cancellable) { view, output in
+            safetyAccessUI {
+                view.isHidden = output
+            }
+        }
+        return self
+    }
+    
 }
 
 /**
@@ -79,6 +109,19 @@ extension StackKitCompatible where Base: UILabel {
         }
     }
     
+    @discardableResult
+    public func receive(
+        text publisher: Published<String>.Publisher,
+        cancellable: inout AnyCancellable?
+    ) -> Self
+    {
+        receive(publisher: publisher, cancellable: &cancellable) { view, output in
+            safetyAccessUI {
+                view.text = output
+            }
+        }
+    }
+    
     
     @discardableResult
     public func receive(
@@ -87,6 +130,19 @@ extension StackKitCompatible where Base: UILabel {
     ) -> Self
     {
         receive(publisher: publisher, storeIn: &cancellables) { view, output in
+            safetyAccessUI {
+                view.text = output
+            }
+        }
+    }
+    
+    @discardableResult
+    public func receive(
+        text publisher: Published<String?>.Publisher,
+        cancellable: inout AnyCancellable?
+    ) -> Self
+    {
+        receive(publisher: publisher, cancellable: &cancellable) { view, output in
             safetyAccessUI {
                 view.text = output
             }
@@ -108,6 +164,19 @@ extension StackKitCompatible where Base: UILabel {
     
     @discardableResult
     public func receive(
+        attributedText publisher: Published<NSAttributedString>.Publisher,
+        cancellable: inout AnyCancellable?
+    ) -> Self
+    {
+        receive(publisher: publisher, cancellable: &cancellable) { view, output in
+            safetyAccessUI {
+                view.attributedText = output
+            }
+        }
+    }
+    
+    @discardableResult
+    public func receive(
         attributedText publisher: Published<NSAttributedString?>.Publisher,
         storeIn cancellables: inout Set<AnyCancellable>
     ) -> Self
@@ -119,4 +188,16 @@ extension StackKitCompatible where Base: UILabel {
         }
     }
     
+    @discardableResult
+    public func receive(
+        attributedText publisher: Published<NSAttributedString?>.Publisher,
+        cancellable: inout AnyCancellable?
+    ) -> Self
+    {
+        receive(publisher: publisher, cancellable: &cancellable) { view, output in
+            safetyAccessUI {
+                view.attributedText = output
+            }
+        }
+    }
 }
