@@ -51,7 +51,6 @@ extension StackKitCompatible where Base: UIView {
     }
 }
 
-
 /**
  这里由于设计逻辑，会有个问题
  
@@ -61,6 +60,7 @@ extension StackKitCompatible where Base: UIView {
  这样就会导致一个问题：
     ❌ 在主线程中修改值，并触发 `container.setNeedsLayout()` 的时候，
  `setNeedsLayout` 会先执行，而 `publisher` 会将任务派发到下一个 loop cycle (也就是 setNeedsLayout 和 receive 先后执行的问题)
+ 所以这里采用 `safetyAccessUI` 来处理线程问题
  */
 
 @available(iOS 13.0, *)

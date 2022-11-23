@@ -21,6 +21,12 @@ class Preview1ViewController: UIViewController {
     @Published var brief = "The best way to use HStack and VStack in UIKit, and also supports Spacer and Divider."
     
     var cancellables: Set<AnyCancellable> = []
+    
+    deinit {
+        // ⚠️ important
+        // cleanup at deinit
+        cancellables.forEach({ $0.cancel() })
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,29 +57,23 @@ class Preview1ViewController: UIViewController {
         container.addContent {
             logoView.stack.size(80)
             VStackView(alignment: .left, distribution: .spacing(6)) {
-                nameLabel.stack
+                nameLabel
+                    .stack
                     .receive(text: $name, storeIn: &cancellables)
                 
-                briefLabel.stack.maxWidth(220)
+                briefLabel
+                    .stack.maxWidth(220)
                     .receive(text: $brief, storeIn: &cancellables)
             }
         }
         
         self.view.addSubview(container)
         
+        // update combine value and refresh layout container
         DispatchQueue.main.asyncAfter(wallDeadline: .now() + 2) {
-            print("done")
-            self.name = "StackKit design by iWECon"
-            self.brief = "Yes!!!"
+            self.name = "Designed by iWECon"
+            self.brief = "Version: 1.2.3"
             self.container.setNeedsLayout()
-        }
-        
-        DispatchQueue.global().asyncAfter(wallDeadline: .now() + 5) {
-            self.name = "StackKit design by iWECon1"
-            self.brief = "Yes!!!2"
-            DispatchQueue.main.async {
-                self.container.setNeedsLayout()
-            }
         }
     }
     

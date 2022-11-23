@@ -2,6 +2,8 @@
 
 ☝️ A layout library similar to SwiftUI.
 
+🔥 Support `Combine` (available iOS 13.0+)
+
 ⚠️ If you have any questions or new ideas, you can bring me a PR at any time.
 
 
@@ -22,6 +24,8 @@ HStackView(alignment: .center, distribution: .spacing(14), padding: UIEdgeInsets
 ```
 ![Demo](Demo/preview2.png)
 
+
+⚠️ If you have any question, please see the demo in `Demo/Demo.xcodeproj` or submit issue.
 
 💡 There are no more examples, you can help to complete/optimize.
 
@@ -85,7 +89,6 @@ VStackView {
 }
 ```
 
-
 ### Change and update
 
 ```swift
@@ -94,6 +97,34 @@ briefLabel.text = "Bump version to 1.2.2"
 
 // stackContainer means any instance of HStackView or VStackView
 stackContainer.setNeedsLayout() // or .sizeToFit() 
+```
+
+### Combine
+
+```swift
+
+import Combine
+
+// ...
+@Published var name: String = "StackKit"
+
+var cancellables = Set<AnyCancellable>()
+
+// ...
+HStackView {
+    UILabel()
+        .stack
+        .then {
+            $0.font = .systemFont(ofSize: 16)
+            $0.textColor = .systemPink
+        }
+        .receive(text: $name, storeIn: &cancellables)
+}
+
+// update name
+self.name = "StackKit version 1.2.3"
+// update stackView
+stackView.setNeedsLayout()
 ```
 
 # 🤔 
