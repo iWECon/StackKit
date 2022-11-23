@@ -7,6 +7,7 @@
 
 import UIKit
 import StackKit
+import Combine
 
 class Preview1ViewController: UIViewController {
     
@@ -15,6 +16,17 @@ class Preview1ViewController: UIViewController {
     let briefLabel = UILabel()
     
     let container = HStackView(alignment: .center)
+    
+    @Published var name = "iWECon/StackKit"
+    @Published var brief = "The best way to use HStack and VStack in UIKit, and also supports Spacer and Divider."
+    
+    var cancellables: Set<AnyCancellable> = []
+    
+    deinit {
+        // ⚠️ important
+        // cleanup at deinit
+        cancellables.forEach({ $0.cancel() })
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +37,11 @@ class Preview1ViewController: UIViewController {
         logoView.layer.cornerCurve = .continuous
         logoView.backgroundColor = .systemGroupedBackground
         
-        nameLabel.text = "iWECon/StackKit"
+        nameLabel.text = name
         nameLabel.font = .systemFont(ofSize: 14, weight: .medium)
         nameLabel.textColor = .black
         
-        briefLabel.text = "The best way to use HStack and VStack in UIKit, and also supports Spacer and Divider."
+        briefLabel.text = brief
         briefLabel.font = .systemFont(ofSize: 12, weight: .light)
         briefLabel.textColor = .black
         briefLabel.numberOfLines = 0
@@ -46,11 +58,23 @@ class Preview1ViewController: UIViewController {
             logoView.stack.size(80)
             VStackView(alignment: .left, distribution: .spacing(6)) {
                 nameLabel
-                briefLabel.stack.maxWidth(220)
+                    .stack
+                    .receive(text: $name, storeIn: &cancellables)
+                
+                briefLabel
+                    .stack.maxWidth(220)
+                    .receive(text: $brief, storeIn: &cancellables)
             }
         }
         
         self.view.addSubview(container)
+        
+        // update combine value and refresh layout container
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 2) {
+            self.name = "Designed by iWECon"
+            self.brief = "Version: 1.2.3"
+            self.container.setNeedsLayout()
+        }
     }
     
     override func viewDidLayoutSubviews() {
