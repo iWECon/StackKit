@@ -55,9 +55,7 @@ open class VStackLayer: CALayer, StackLayer {
     }
     
     open override func preferredFrameSize() -> CGSize {
-        setNeedsLayout()
-        setNeedsDisplay()
-        
+        layoutSublayers()
         return contentSize
     }
     
