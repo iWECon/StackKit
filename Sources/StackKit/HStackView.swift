@@ -122,9 +122,7 @@ open class HStackView: UIView, StackView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        setNeedsLayout()
-        layoutIfNeeded()
-        
+        layoutSubviews()
         return contentSize
     }
     
