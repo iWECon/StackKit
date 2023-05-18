@@ -215,9 +215,7 @@ open class WrapStackView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        setNeedsLayout()
-        layoutIfNeeded()
-        
+        layoutSubviews()
         let effectiveViewsSize = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
