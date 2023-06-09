@@ -12,7 +12,7 @@ open class WrapStackView: UIView {
     public required init(
         verticalAlignment: WrapStackVerticalAlignment = .nature,
         horizontalAlignment: WrapStackHorizontalAlignment = .center,
-        itemSize: WrapStackItemSize = .adaptive(column: 4),
+        itemSize: WrapStackItemSize = .auto,
         contentInsets: UIEdgeInsets = .zero,
         itemSpacing: CGFloat = 0,
         lineSpacing: CGFloat = 0,
@@ -215,7 +215,7 @@ open class WrapStackView: UIView {
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        layoutSubviews()
+        super.sizeThatFits(size)
         let effectiveViewsSize = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
@@ -267,9 +267,13 @@ extension WrapStackView {
             return calculateSize
             
         case .fixed(let size):
-            let _ = item.sizeThatFits(size) // call size to fits
+            item._fitSize(with: item._stackKit_fitType) // call size to fits
             item.frame.size = size
             return size
+            
+        case .auto:
+            item._fitSize(with: item._stackKit_fitType)
+            return item.frame.size
         }
     }
 }
