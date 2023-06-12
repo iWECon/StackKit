@@ -1,6 +1,6 @@
 import UIKit
 
-open class WrapStackView: UIView {
+open class WrapStackLayer: CALayer {
     
     public var verticalAlignment: WrapStackVerticalAlignment = .nature
     public var horizontalAlignment: WrapStackHorizontalAlignment = .center
@@ -9,6 +9,18 @@ open class WrapStackView: UIView {
     public var lineSpacing: CGFloat = 0
     public var itemSize: WrapStackItemSize = .adaptive(column: 4)
     
+    public required override init() {
+        super.init()
+    }
+    
+    public override init(layer: Any) {
+        super.init(layer: layer)
+    }
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
     public required init(
         verticalAlignment: WrapStackVerticalAlignment = .nature,
         horizontalAlignment: WrapStackHorizontalAlignment = .center,
@@ -16,9 +28,9 @@ open class WrapStackView: UIView {
         contentInsets: UIEdgeInsets = .zero,
         itemSpacing: CGFloat = 0,
         lineSpacing: CGFloat = 0,
-        @_StackKitWrapStackContentResultBuilder content: () -> [UIView] = { [] }
+        @_StackKitWrapStackLayerContentResultBuilder content: () -> [CALayer] = { [] }
     ) {
-        super.init(frame: .zero)
+        super.init()
         
         self.verticalAlignment = verticalAlignment
         self.horizontalAlignment = horizontalAlignment
@@ -27,36 +39,28 @@ open class WrapStackView: UIView {
         self.itemSpacing = itemSpacing
         self.lineSpacing = lineSpacing
         
+        addContent(content)
+    }
+    
+    public func addContent(@_StackKitWrapStackLayerContentResultBuilder _ content: () -> [CALayer]) {
         for v in content() {
-            addSubview(v)
+            addSublayer(v)
         }
     }
     
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    public func resetContent(@_StackKitWrapStackContentResultBuilder _ content: () -> [CALayer]) {
+        sublayers?.forEach { $0.removeFromSuperlayer() }
+        addContent(content)
     }
     
-    public func addContent(@_StackKitWrapStackContentResultBuilder _ content: () -> [UIView]) {
-        for v in content() {
-            addSubview(v)
-        }
-    }
-    
-    public func resetContent(@_StackKitWrapStackContentResultBuilder _ content: () -> [UIView]) {
-        subviews.forEach { $0.removeFromSuperview() }
-        for v in content() {
-            addSubview(v)
-        }
-    }
-    
-    public var effectiveSubviews: [UIView] {
-        subviews.filter { $0._isEffectiveView }
+    public var effectiveSublayers: [CALayer] {
+        sublayers?.filter { $0._isEffectiveLayer } ?? []
     }
     
     private class Attribute: Equatable {
         var section: Int  // 第几行
-        var subviews: [UIView] = []
-        var hStackView: HStackView = HStackView()
+        var subLayers: [CALayer] = []
+        var hStackLayer: HStackLayer = HStackLayer()
         
         required init(section: Int) {
             self.section = section
@@ -68,12 +72,12 @@ open class WrapStackView: UIView {
     }
     private var attributes: [Attribute] = []
     
-    open override func layoutSubviews() {
-        super.layoutSubviews()
+    open override func layoutSublayers() {
+        super.layoutSublayers()
         
         switch verticalAlignment {
         case .nature:
-            for (index, subview) in effectiveSubviews.enumerated() {
+            for (index, subview) in effectiveSublayers.enumerated() {
                 
                 let subviewSize = itemSize(subview)
                 
@@ -84,7 +88,7 @@ open class WrapStackView: UIView {
                     continue
                 }
                 
-                let previousView = effectiveSubviews[index - 1]
+                let previousView = effectiveSublayers[index - 1]
                 
                 let x = previousView.frame.maxX + itemSpacing
                 let maxX = x + subviewSize.width
@@ -92,7 +96,7 @@ open class WrapStackView: UIView {
                     // new section
                     subview.frame.origin.x = contentInsets.left // contentInsets
                     
-                    let upMaxY = effectiveSubviews[...(index - 1)].map { $0.frame.maxY }.max() ?? 0
+                    let upMaxY = effectiveSublayers[...(index - 1)].map { $0.frame.maxY }.max() ?? 0
                     subview.frame.origin.y = upMaxY + lineSpacing
                     
                 } else {
@@ -105,7 +109,7 @@ open class WrapStackView: UIView {
         case .center:
             let centerX = frame.width / 2
             
-            let effectiveSubviews = effectiveSubviews
+            let effectiveSubviews = effectiveSublayers
             
             var section = 0
             for (index, subview) in effectiveSubviews.enumerated() {
@@ -115,15 +119,15 @@ open class WrapStackView: UIView {
                     recordAttribute(section: section, subView: subview)
                     
                     let hStackView = hStackView(at: section)
-                    addSubview(hStackView)
-                    hStackView.center.x = centerX
+                    addSublayer(hStackView)
+                    hStackView.frame.origin.x = centerX - (hStackView.frame.width / 2)
                     hStackView.frame.origin.y = contentInsets.top
                     continue
                 }
                 
                 let previousView = effectiveSubviews[index - 1]
                 let subviewAttribute = attribute(withSubview: previousView)
-                let subViewInHStackView = subviewAttribute.hStackView
+                let subViewInHStackView = subviewAttribute.hStackLayer
                 let maxX = subViewInHStackView.frame.width + itemSpacing + subviewSize.width
                 if maxX >= frame.width - contentInsets.right {
                     // new section
@@ -132,15 +136,14 @@ open class WrapStackView: UIView {
                     recordAttribute(section: section, subView: subview)
                     
                     let hStackView = hStackView(at: section)
-                    addSubview(hStackView)
-                    hStackView.center.x = centerX
+                    addSublayer(hStackView)
+                    hStackView.frame.origin.x = centerX - (hStackView.frame.width / 2)
                     hStackView.frame.origin.y = subViewInHStackView.frame.maxY + lineSpacing
                 } else {
                     // same section
                     recordAttribute(section: section, subView: subview)
                     let hStackView = hStackView(at: section)
-                    
-                    hStackView.center.x = centerX
+                    hStackView.frame.origin.x = centerX - (hStackView.frame.width / 2)
                 }
             }
             moveAllHStackViewSubviewsToSelf()
@@ -152,91 +155,95 @@ open class WrapStackView: UIView {
     
     private func moveAllHStackViewSubviewsToSelf() {
         for attribute in attributes {
-            for subview in attribute.subviews {
-                let superRect = attribute.hStackView.convert(subview.frame, to: self)
-                addSubview(subview)
+            for subview in attribute.subLayers {
+                let superRect = attribute.hStackLayer.convert(subview.frame, to: self)
+                addSublayer(subview)
                 subview.frame = superRect
             }
-            attribute.subviews.removeAll()
-            attribute.hStackView.removeFromSuperview()
+            attribute.subLayers.removeAll()
+            attribute.hStackLayer.removeFromSuperlayer()
         }
         attributes.removeAll()
     }
     
-    private func hStackView(at section: Int) -> HStackView {
+    private func hStackView(at section: Int) -> HStackLayer {
         guard attributes.contains(where: { $0.section == section }) else {
             return .init()
         }
-        return attributes.first(where: { $0.section == section })!.hStackView
+        return attributes.first(where: { $0.section == section })!.hStackLayer
     }
     
-    private func attribute(withSubview subview: UIView) -> Attribute {
-        attributes.lazy.first(where: { $0.subviews.lazy.contains(subview) })!
+    private func attribute(withSubview subview: CALayer) -> Attribute {
+        attributes.lazy.first(where: { $0.subLayers.lazy.contains(subview) })!
     }
     
-    private func views(inSection section: Int) -> [UIView] {
+    private func views(inSection section: Int) -> [CALayer] {
         guard let attr = attributes.first(where: { $0.section == section }) else {
             return []
         }
-        return attr.subviews
+        return attr.subLayers
     }
     
-    private func recordAttribute(section: Int, subView: UIView) {
+    private func recordAttribute(section: Int, subView: CALayer) {
         if let attr = attributes.first(where: { $0.section == section }) {
-            if !attr.subviews.contains(subView) { // contains
-                attr.subviews.append(subView)
-                attr.hStackView.addSubview(subView)
+            if !attr.subLayers.contains(subView) { // contains
+                attr.subLayers.append(subView)
+                attr.hStackLayer.addSublayer(subView)
                 
-                attr.hStackView.frame.size.height = attr.subviews.map({ $0.frame.size.height }).max() ?? 0
-                let hStackSize = attr.hStackView.sizeThatFits(.zero)
-                attr.hStackView.frame.size = hStackSize
+                attr.hStackLayer.frame.size.height = attr.subLayers.map({ $0.frame.size.height }).max() ?? 0
+                let hStackSize = attr.hStackLayer.sizeThatFits(.zero)
+                attr.hStackLayer.frame.size = hStackSize
             }
         } else { // no contains (means a new section)
             let attr = Attribute(section: section)
-            attr.subviews.append(subView)
-            attr.hStackView.distribution = .spacing(itemSpacing)
+            attr.subLayers.append(subView)
+            attr.hStackLayer.distribution = .spacing(itemSpacing)
             switch horizontalAlignment { // set alignment
             case .top:
-                attr.hStackView.alignment = .top
+                attr.hStackLayer.alignment = .top
             case .center:
-                attr.hStackView.alignment = .center
+                attr.hStackLayer.alignment = .center
             case .bottom:
-                attr.hStackView.alignment = .bottom
+                attr.hStackLayer.alignment = .bottom
             }
             subView.frame.origin = .zero
-            attr.hStackView.frame.size = subView.frame.size // first size
-            attr.hStackView.addSubview(subView)
+            attr.hStackLayer.frame.size = subView.frame.size // first size
+            attr.hStackLayer.addSublayer(subView)
             
-            let hStackSize = attr.hStackView.sizeThatFits(.zero)
-            attr.hStackView.frame.size = hStackSize
+            let hStackSize = attr.hStackLayer.sizeThatFits(.zero)
+            attr.hStackLayer.frame.size = hStackSize
             
             attributes.append(attr)
         }
     }
     
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+    open override func preferredFrameSize() -> CGSize {
+        return sizeThatFits(.zero)
+    }
+    
+    public func sizeThatFits(_ size: CGSize) -> CGSize {
         if size.width != .greatestFiniteMagnitude {
             self.frame.size.width = size.width
         }
         if size.height != .greatestFiniteMagnitude {
             self.frame.size.height = size.height
         }
-        layoutSubviews()
+        self.layoutSublayers()
         
-        let effectiveViewsSize = effectiveSubviews.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
+        let effectiveViewsSize = effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
             result.union(rect)
         }.size
         
         var _size = effectiveViewsSize
-        if !effectiveSubviews.isEmpty {
-            _size.height += contentInsets.bottom
+        if !effectiveSublayers.isEmpty {
             _size.width += contentInsets.right
+            _size.height += contentInsets.bottom
         }
         return _size
     }
     
-    open override func sizeToFit() {
-        layoutSizeToFit(.auto)
+    public func sizeToFit() {
+        frame.size = sizeThatFits(.zero)
     }
     
     public func layoutSizeToFit(_ layout: WrapStackLayout) {
@@ -260,27 +267,26 @@ open class WrapStackView: UIView {
     }
 }
 
-extension WrapStackView {
+extension WrapStackLayer {
     
-    private func itemSize(_ item: UIView) -> CGSize {
+    private func itemSize(_ item: CALayer) -> CGSize {
         switch itemSize {
         case .adaptive(let column):
             let itemLength = itemSpacing * CGFloat(column - 1)
             let contentHorizontalLength = contentInsets.left + contentInsets.right
             let calculateWidth = (frame.width - contentHorizontalLength - itemLength) / CGFloat(column)
             // call size to fits
-            let itemHeight = item.sizeThatFits(CGSize(width: calculateWidth, height: CGFloat.greatestFiniteMagnitude)).height
+            let itemHeight = (item.frame.size == .zero ? item.preferredFrameSize() : item.frame.size).height
             let calculateSize = CGSize(width: calculateWidth, height: itemHeight)
             item.frame.size = calculateSize
             return calculateSize
             
         case .fixed(let size):
-            item._fitSize(with: item._stackKit_fitType) // call size to fits
             item.frame.size = size
             return size
             
         case .auto:
-            item._fitSize(with: item._stackKit_fitType)
+            item.frame.size = item.frame.size == .zero ? item.preferredFrameSize() : item.frame.size
             return item.frame.size
         }
     }

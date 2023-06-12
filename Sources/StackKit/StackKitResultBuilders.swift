@@ -83,3 +83,4 @@ extension _StackKitLayerContentResultBuilder {
 
 @resultBuilder public struct _StackKitVStackLayerContentResultBuilder: _StackKitLayerContentResultBuilder { }
 @resultBuilder public struct _StackKitHStackLayerContentResultBuilder: _StackKitLayerContentResultBuilder { }
+@resultBuilder public struct _StackKitWrapStackLayerContentResultBuilder: _StackKitLayerContentResultBuilder { }
