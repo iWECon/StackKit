@@ -30,11 +30,13 @@ HStackView(alignment: .center, distribution: .spacing(14), padding: UIEdgeInsets
 💡 There are no more examples, you can help to complete/optimize.
 
 
-### Padding
+### HStackView / VStackView
+
+Alignment, Distribution, Padding and `resultBuilder`
 
 ```swift
-HStackView(padding: UIEdgeInsets)
-VStackView(padding: UIEdgeInsets)
+HStackView(alignment: HStackAlignment, distribution: HStackDistribution, padding: UIEdgeInsets, content: @resultBuilder)
+VStackView(alignment: VStackAlignment, distribution: VStackDistribution, padding: UIEdgeInsets, content: @resultBuilder)
 ```
 
 ### Subview size is fixed
@@ -63,7 +65,7 @@ briefLabel.stack.offset(CGPoint?)
 ### SizeToFit
 
 ```swift
-briefLabel.stack.width(220).sizeToFit(.width)
+briefLabel.stack.width(220).sizeToFit(.width) // see `UIView+FitSize.swift`
 ```
 
 ### Spacer & Divider
@@ -125,6 +127,12 @@ HStackView {
 self.name = "StackKit version 1.2.3"
 // update stackView
 stackView.setNeedsLayout()
+
+// remember cleanup cancellables in deinit
+deinit {
+    // the effective same as `cancellables.forEach { $0.cancel() }`
+    cancellables.removeAll()
+}
 ```
 
 # 🤔 
