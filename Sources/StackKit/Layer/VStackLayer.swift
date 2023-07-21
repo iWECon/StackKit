@@ -108,9 +108,7 @@ open class VStackLayer: CALayer, StackLayer {
     }
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
-        setNeedsLayout()
-        layoutIfNeeded()
-        
+        layoutSublayers()
         return contentSize
     }
     

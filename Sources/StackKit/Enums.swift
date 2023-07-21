@@ -191,6 +191,7 @@ public enum WrapStackHorizontalAlignment {
 public enum WrapStackItemSize {
     case fixed(_ size: CGSize)
     case adaptive(column: Int)
+    case auto
 }
 
 public enum WrapStackLayout {
