@@ -40,7 +40,7 @@ class WrapStackLayerDemoViewController: UIViewController {
         // Do any additional setup after loading the view.
         let widths: [CGFloat] = [20, 30, 50, 120, 40, 230, 50, 60, 10]
         fixedWrapStackLayer.addContent {
-            for _ in (0 ... 2) {
+            for _ in (0 ... 20) {
                 makeUIView(size: CGSize(width: widths.randomElement() ?? 10, height: 30))
             }
         }
@@ -74,7 +74,7 @@ class WrapStackLayerDemoViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        fixedWrapStackLayer.pin.top(120).horizontally().sizeToFit(.content)
+        fixedWrapStackLayer.pin.top(120).maxWidth(220).sizeToFit(.width)
         adaptiveWrapStackLayer.pin.top(to: fixedWrapStackLayer.edge.bottom).marginTop(50).horizontally().sizeToFit(.width)
         autoWrapStackLayer.pin.top(to: adaptiveWrapStackLayer.edge.bottom).marginTop(50).horizontally().sizeToFit(.width)
     }

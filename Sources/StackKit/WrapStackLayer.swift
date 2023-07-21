@@ -222,12 +222,7 @@ open class WrapStackLayer: CALayer {
     }
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
-        if size.width != .greatestFiniteMagnitude {
-            self.frame.size.width = size.width
-        }
-        if size.height != .greatestFiniteMagnitude {
-            self.frame.size.height = size.height
-        }
+        self.frame.size = size
         self.layoutSublayers()
         
         let effectiveViewsSize = effectiveSublayers.map({ $0.frame }).reduce(CGRect.zero) { result, rect in
@@ -240,10 +235,6 @@ open class WrapStackLayer: CALayer {
             _size.height += contentInsets.bottom
         }
         return _size
-    }
-    
-    public func sizeToFit() {
-        frame.size = sizeThatFits(.zero)
     }
     
     public func layoutSizeToFit(_ layout: WrapStackLayout) {
